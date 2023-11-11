@@ -357,50 +357,30 @@ Available algorithms in this section:
   Pick e such that gcd(e,n) == 1
   d = e**-1 % n
 
-  then let r = 1 < r < n//2
-  Let N = n * r
+  E = e**e % n
+  D = d**e % n
 
-  Public key: {e, N}
-  Private key: {p,q,n,d}
+  Public key: {E,n}
+  Private key: {p,q,d,e,D}
 
   Encryption:
   —---------------------------------------------------------------
 
-  ciphertext = message*e**e % N
+  ciphertext = message*E % n
 
   Decryption:
   —---------------------------------------------------------------
-  message = ciphertext*d**e % n
+  message = ciphertext*D % n
 
-
-  Known problams:
+  Signing:
   —---------------------------------------------------------------
-  1.
-    When m is bigger then the private n. the decrypted message would be m%n.
-    But since the private n is private, the encryptor has no way of knowing if the message would be what he had intended.
-    My solution: make bigger keys and use a format like OAEP
-  2.
-    The public N is big.
-    My solution: multiply n with smaller numbers.
-  3 (Not 100% fixed).
-    Before today the encyption and decryption would just be:
+  sig = message*D % n
+  verify = sig*E % n == message
   
-    ciphertext = message*e % N
-    message = ciphertext*d % n
   
-    and this works, but because the N is massive, the % almost never happens.
-    that means that you can just divide the ciphertext with e to get the answer.
-  
-    My solution: 
-    To generate N multiply smaller numbers with n.
-    Also do:
-    ciphertext = message*e**e % N
-    message = ciphertext*d**e % n
   ```
-  Please keep in mind that things will change.
-  
-  Right now I'm trying to make signatures work with BlackFrog.
-  
+  Please keep in mind that things might change.
+
   Also, this implementation uses OAEP and the key size is 512.
 
 ### Encryption algs

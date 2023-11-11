@@ -842,40 +842,9 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
     @staticmethod
     def visit_fun_algs_BlackFrog():
         print("""BlackFrog is an asymmetric encryption that I invented (There might be a similar algorithm, the math is not very complicated.)""")
-        print("""
-            BlackFrog           
---------------------------------
-          Key generation:
---------------------------------
-Let p = large prime
-Let q = large prime
-Let n = p * q
-Let e = 1 < e < n, gcd(e,n) = 1
-Let d= e**-1 mod n 
-
-Let r be 1<r<n-1
-Let N be n * e * r * d
-
-Public: e, N
-Private: d, n
-
-            Encryption
---------------------------------
-
-c = m * e**e mod N
-
-            Decryption
---------------------------------
-m = c * d**e mod n
-
-
-------------------------------------------------------------------------------------------------
-This implementation uses OAEP
-
-""")
         pub_file_name = input("Public file name: \n")
         priv_file_name = input("Private file name: \n")
-        generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt: G/E/D: \n").lower()
+        generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt, Sign, Verify: G/E/D/S/V: \n").lower()
         if generate_encrypt_decrypt == 'g':
             pub, priv = BlackFrog.generate_keys(512)
             print(pub)
@@ -899,6 +868,26 @@ This implementation uses OAEP
             msg = OAEP.OAEP.decrypt_BlackFrog(priv, cipher)
             print(msg.rstrip(b'\x00'))
             return
+        elif generate_encrypt_decrypt == 's':
+            with open(priv_file_name, 'r') as f:
+                priv = BlackFrogKey.load(f.read())
+            msg = input("message to sign: \n").encode('utf-8')
+            sig = BlackFrog.sign(priv, msg)
+            file_out = input('Signature file out: ')
+            with open(file_out, 'wb') as f:
+                f.write(sig)
+            return sig
+        elif generate_encrypt_decrypt == 'v':
+            with open(pub_file_name, 'r') as f:
+                pub = BlackFrogKey.load(f.read())
+            file_in = input('Signature file: ')
+            with open(file_in, 'rb') as f:
+                sig = f.read()
+            message = input("the original message: ").encode()
+            verified = BlackFrog.verify(pub,sig,message)
+            if verified: print(f"The message '{message.decode()}' is authentic")
+            else: print(f"The message '{message.decode()}' is not authentic")
+
 
     @staticmethod
     def visit_fun_algs_CeaserCipher():
