@@ -403,5 +403,5 @@ Available algorithms in this section:
   Also, this implementation uses OAEP and the key size is 512.
 
 ### Encryption algs
-* #### Ceaser Cipher / Rot13
+- #### Ceaser Cipher / Rot13
   This cipher shifts the letters of the alphabet by 13
