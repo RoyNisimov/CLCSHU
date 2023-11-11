@@ -95,7 +95,7 @@ You might have tried to use the '^' operator in python before, confusing this fo
         elif both_or_encrypt_or_decrypt == 'd':
             cipher = int(input('cipher: ').encode().hex(), 16)
             pt = sj.decrypt(cipher, key)
-            pt = pt.to_bytes(pt.bit_length(), sys.byteorder)
+            pt = pt.to_bytes(pt.bit_length(), sys.byteorder).rstrip(b'\x00').decode()
             print(pt)
             return pt
         elif both_or_encrypt_or_decrypt == 'b':
@@ -104,7 +104,7 @@ You might have tried to use the '^' operator in python before, confusing this fo
             cipher = sj.encrypt(PT, key)
             print(f"Cipher = {cipher}")
             pt = sj.decrypt(cipher, key)
-            pt = pt.to_bytes(pt.bit_length(), sys.byteorder).rstrip().decode()
+            pt = pt.to_bytes(pt.bit_length(), sys.byteorder).rstrip(b'\x00').decode()
             print(pt)
             return cipher
 
