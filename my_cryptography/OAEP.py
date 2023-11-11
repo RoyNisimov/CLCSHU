@@ -1,7 +1,7 @@
 import hashlib
 import random
 import sys
-from CLCSHU1.my_cryptography import ElGamal
+from CLCSHU.my_cryptography import ElGamal
 from CHA import BlackFrog, BlackFrogKey
 
 

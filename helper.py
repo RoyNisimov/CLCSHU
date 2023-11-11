@@ -1,3 +1,5 @@
+import sys
+
 import CHA
 from CHA import BlackFrog, BlackFrogKey, OAEP
 import string
@@ -5,10 +7,10 @@ import hashlib
 import ast
 import math
 from cryptography.fernet import Fernet
-from CLCSHU1.Steganography.PNGs import LSB
-from CLCSHU1.Steganography.PNGs import EOF
-from CLCSHU1.my_cryptography import ElGamal, OAEP
-from CLCSHU1.my_cryptography.Global import Common
+from CLCSHU.Steganography.PNGs import LSB
+from CLCSHU.Steganography.PNGs import EOF
+from CLCSHU.my_cryptography import ElGamal, OAEP, Skipjack
+from CLCSHU.my_cryptography.Global import Common
 import json
 # pycryptodome:
 from Crypto.Random import get_random_bytes
@@ -75,6 +77,36 @@ You might have tried to use the '^' operator in python before, confusing this fo
 'https://dev.to/wrongbyte/cryptography-basics-breaking-repeated-key-xor-ciphertext-1fm2'
 
             """)
+
+    @staticmethod
+    def visit_cryptography_Skipjack():
+        print("Skipjack: 'https://www.youtube.com/watch?v=cMm5cd-WB2s'")
+        print("Source code: 'https://github.com/jacksoninfosec/skipjack/blob/main/skipjack.py'")
+        key = input("Key (like: '0x00, 0x99, 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11'): \n")
+        key = ast.literal_eval(f"[{key}]")
+        both_or_encrypt_or_decrypt = input("Encrypt, decrypt, or both. E/D/B:\n").lower()
+        sj = Skipjack.SkipJack()
+        if both_or_encrypt_or_decrypt == 'e':
+            PT = input('message: ').encode()
+            PT = int.from_bytes(PT, sys.byteorder)
+            cipher = sj.encrypt(PT, key)
+            print(cipher)
+            return cipher
+        elif both_or_encrypt_or_decrypt == 'd':
+            cipher = int(input('cipher: ').encode().hex(), 16)
+            pt = sj.decrypt(cipher, key)
+            pt = pt.to_bytes(pt.bit_length(), sys.byteorder)
+            print(pt)
+            return pt
+        elif both_or_encrypt_or_decrypt == 'b':
+            PT = input('message: ').encode()
+            PT = int.from_bytes(PT, sys.byteorder)
+            cipher = sj.encrypt(PT, key)
+            print(f"Cipher = {cipher}")
+            pt = sj.decrypt(cipher, key)
+            pt = pt.to_bytes(pt.bit_length(), sys.byteorder).rstrip().decode()
+            print(pt)
+            return cipher
 
     @staticmethod
     def visit_cryptography_Feistel64XOR():

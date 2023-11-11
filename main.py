@@ -1,5 +1,5 @@
 
-from CLCSHU1.helper import *
+from CLCSHU.helper import *
 class Bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -67,7 +67,7 @@ _________                            __                                         
 4) Fun Algorithms (WARNING: not for real use cases)
 """)
     cryptography_modes = ['cryptography', "vulnerabilities"]
-    cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "ChaCha20", "ElGamal", "DSA"]
+    cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "ChaCha20", "ElGamal", "DSA", "Skipjack"]
     cryptography_vuln = ["Fermat_Factorization"]
     steganography = ["PNG_LSB", "PNG_EOF"]
     hashing = ['Sha256', 'Sha512', 'Sha1', 'Sha384', "Sha224", "BLACK2s", "BLACK2b", "HMAC"]

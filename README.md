@@ -65,6 +65,7 @@ Right now the available algorithms in the cryptography section are:
 * [ChaCha20](https://www.youtube.com/watch?v=UeIpq-C-GSA)
 * [ElGamal](#elgamal)
 * [DSA](https://youtu.be/bO4lEQfPn60?t=386)
+* [SkipJack](https://www.youtube.com/watch?v=cMm5cd-WB2s)
 
 Also note that some of the algorithms listed above are implemented using my code.
 
