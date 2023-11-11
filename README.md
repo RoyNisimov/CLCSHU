@@ -6,7 +6,7 @@
 
 # Installation
 
-do ``` git clone <url>```
+do ``` git clone https://github.com/RoyNisimov/CLCSHU```
 then ``` cd CLCSHU```
 and then do ```pip install -r requierments.txt```
 
