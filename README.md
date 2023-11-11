@@ -334,66 +334,66 @@ Available algorithms in this section:
   * #### CHAB Feistel
     CHAB Feistel is a symmetric encryption that uses the [Feistel Network](#feistel64xor) along with CHAB (CHA Bytes).
     and a secret key (The nonce)
-    * #### BlackFrog
-      BlackFrog is an asymmetric encryption that I invented/found. (The math is not very complicated, so I won't be surprised if someone else had already discovered it)
+  * #### BlackFrog
+    BlackFrog is an asymmetric encryption that I invented/found. (The math is not very complicated, so I won't be surprised if someone else had already discovered it)
   
-      The maths of BlackFrog are as follows:
-      ``` 
-      Key generation:
-      —---------------------------------------------------------------
+    The maths of BlackFrog are as follows:
+    ``` 
+    Key generation:
+    —---------------------------------------------------------------
 
-      Let p = large prime number
-      Let q = large prime number
-      Let n = p * q
+    Let p = large prime number
+    Let q = large prime number
+    Let n = p * q
   
-      Pick e such that gcd(e,n) == 1
-      d = e**-1 % n
+    Pick e such that gcd(e,n) == 1
+    d = e**-1 % n
   
-      then let r = 1 < r < n//2
-      Let N = n * r
+    then let r = 1 < r < n//2
+    Let N = n * r
   
-      Public key: {e, N}
-      Private key: {p,q,n,d}
+    Public key: {e, N}
+    Private key: {p,q,n,d}
   
-      Encryption:
-      —---------------------------------------------------------------
+    Encryption:
+    —---------------------------------------------------------------
 
-      ciphertext = message*e**e % N
+    ciphertext = message*e**e % N
   
-      Decryption:
-      —---------------------------------------------------------------
-      message = ciphertext*d**e % n
+    Decryption:
+    —---------------------------------------------------------------
+    message = ciphertext*d**e % n
   
   
-      Known problams:
-      —---------------------------------------------------------------
-      1.
-        When m is bigger then the private n. the decrypted message would be m%n.
-        But since the private n is private, the encryptor has no way of knowing if the message would be what he had intended.
-        My solution: make bigger keys and use a format like OAEP
-      2.
-        The public N is big.
-        My solution: multiply n with smaller numbers.
-      3 (Not 100% fixed).
-        Before today the encyption and decryption would just be:
-      
-        ciphertext = message*e % N
-        message = ciphertext*d % n
+    Known problams:
+    —---------------------------------------------------------------
+    1.
+      When m is bigger then the private n. the decrypted message would be m%n.
+      But since the private n is private, the encryptor has no way of knowing if the message would be what he had intended.
+      My solution: make bigger keys and use a format like OAEP
+    2.
+      The public N is big.
+      My solution: multiply n with smaller numbers.
+    3 (Not 100% fixed).
+      Before today the encyption and decryption would just be:
     
-        and this works, but because the N is massive, the % almost never happens.
-        that means that you can just divide the ciphertext with e to get the answer.
-      
-        My solution: 
-        To generate N multiply smaller numbers with n.
-        Also do:
-        ciphertext = message*e**e % N
-        message = ciphertext*d**e % n
-      ```
-      Please keep in mind that things will change.
-      
-      Right now I'm trying to make signatures work with BlackFrog.
-      
-      Also, this implementation uses OAEP and the key size is 512.
+      ciphertext = message*e % N
+      message = ciphertext*d % n
+    
+      and this works, but because the N is massive, the % almost never happens.
+      that means that you can just divide the ciphertext with e to get the answer.
+    
+      My solution: 
+      To generate N multiply smaller numbers with n.
+      Also do:
+      ciphertext = message*e**e % N
+      message = ciphertext*d**e % n
+    ```
+    Please keep in mind that things will change.
+    
+    Right now I'm trying to make signatures work with BlackFrog.
+    
+    Also, this implementation uses OAEP and the key size is 512.
 
 ### Encryption algs
 * #### Ceaser Cipher / Rot13
