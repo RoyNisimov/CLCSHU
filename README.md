@@ -350,11 +350,9 @@ Available algorithms in this section:
   Key generation:
   —---------------------------------------------------------------
 
-  Let p = large prime number
-  Let q = large prime number
-  Let n = p * q
+  Let n = large prime number
 
-  Pick e such that gcd(e,n) == 1
+  Pick e such that gcd(e,n) == 1 and e < n
   d = e**-1 % n
   N = n * e * random_number
   E = e**e % n

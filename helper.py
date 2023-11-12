@@ -1,5 +1,5 @@
 import sys
-
+from main import Bcolors
 import CHA
 from CHA import BlackFrog, BlackFrogKey, OAEP
 import string
@@ -842,9 +842,10 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
     @staticmethod
     def visit_fun_algs_BlackFrog():
         print("""BlackFrog is an asymmetric encryption that I invented (There might be a similar algorithm, the math is not very complicated.)""")
+        print(f"""{Bcolors.WARNING}BlackFrog is probably not safe{Bcolors.ENDC}""")
         pub_file_name = input("Public file name: \n")
         priv_file_name = input("Private file name: \n")
-        generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt, Sign, Verify: G/E/D/S/V: \n").lower()
+        generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt: G/E/D: \n").lower()
         if generate_encrypt_decrypt == 'g':
             pub, priv = BlackFrog.generate_keys(512)
             print(pub)

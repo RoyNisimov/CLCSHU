@@ -61,10 +61,10 @@ _________                            __                                         
     print(f"WARNING: Some of the tools only have ECB mode! check out more info about modes of operation: 'https://www.youtube.com/watch?v=Rk0NIQfEXBA'{Bcolors.ENDC}")
     print(f"{Bcolors.FAIL}This tool was made for fun and learning cryptography and python. {Bcolors.BOLD}DO NOT USE FOR REAL USE CASES{Bcolors.ENDC}")
     print("banner was made with this: 'https://patorjk.com/software/taag/#p=display&h=0&v=0&f=Graffiti&t=Type%20Something%20'")
-    csh: str = input("""1) Cryptography
+    csh: str = input(f"""{Bcolors.HEADER}1) Cryptography
 2) Steganography
 3) Hashing
-4) Fun Algorithms (WARNING: not for real use cases)
+4) Fun Algorithms (WARNING: not for real use cases){Bcolors.ENDC}
 """)
     cryptography_modes = ['cryptography', "vulnerabilities"]
     cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "ChaCha20", "ElGamal", "DSA", "Skipjack"]
@@ -78,37 +78,37 @@ _________                            __                                         
     if csh == '1':
         branch = 'cryptography'
         for index, name in enumerate(cryptography_modes):
-            print("{0}: {1}".format(index, name))
+            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
         index = int(input("Enter choice number: "))
         index = index % len(cryptography_modes)
         if index == 0:
             for index, name in enumerate(cryptography_list):
-                print("{0}: {1}".format(index, name))
+                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
             index = int(input("Enter choice number: "))
             call.visit(branch, cryptography_list[index % len(cryptography_list)])
         elif index == 1:
             branch += '_vuln'
             for index, name in enumerate(cryptography_vuln):
-                print("{0}: {1}".format(index, name))
+                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
             index = int(input("Enter choice number: "))
             call.visit(branch, cryptography_vuln[index % len(cryptography_vuln)])
     elif csh == '2':
         branch = 'steganography'
         for index, name in enumerate(steganography):
-            print("{0}: {1}".format(index, name))
+            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
         index = int(input("Enter choice number: "))
         call.visit(branch, steganography[index % len(steganography)])
     elif csh == '3':
         branch = 'hashing'
         print("""Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
         for index, name in enumerate(hashing):
-            print("{0}: {1}".format(index, name))
+            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
         index = int(input("Enter choice number: "))
         call.visit(branch, hashing[index % len(hashing)])
     elif csh == '4':
         print("WARNING: not for real use cases, this was made for fun!")
         branch = 'fun_algs'
         for index, name in enumerate(fun_algs.keys()):
-            print("{0}: {1}".format(index, name))
+            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
         index = int(input("Enter choice number: "))
         call.visit(branch, list(fun_algs.values())[index % len(fun_algs)])
