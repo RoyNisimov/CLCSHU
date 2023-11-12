@@ -344,7 +344,7 @@ Available algorithms in this section:
   and a secret key (The nonce)
 * #### BlackFrog
   BlackFrog is an asymmetric encryption that I invented/found. (The math is not very complicated, so I won't be surprised if someone else had already discovered it)
-
+  Also note that this encryption is not safe at all.
   The math of BlackFrog is as follows:
   ``` 
   Key generation:
@@ -356,7 +356,6 @@ Available algorithms in this section:
 
   Pick e such that gcd(e,n) == 1
   d = e**-1 % n
-
   E = e**e % n
   D = d**e % n
 
@@ -372,10 +371,9 @@ Available algorithms in this section:
   —---------------------------------------------------------------
   message = ciphertext*D % n
 
-  Signing:
-  —---------------------------------------------------------------
-  sig = message*D % n
-  verify = sig*E % n == message
+  Known problams:
+  This is insecure. though finding the real D and d is hard, you can easily make a similar key that works.
+  
   
   
   ```
