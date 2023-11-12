@@ -356,16 +356,17 @@ Available algorithms in this section:
 
   Pick e such that gcd(e,n) == 1
   d = e**-1 % n
+  N = n * e * random_number
   E = e**e % n
   D = d**e % n
 
-  Public key: {E,n}
-  Private key: {p,q,d,e,D}
+  Public key: {E,N}
+  Private key: {p,q,n,d,e,D}
 
   Encryption:
   —---------------------------------------------------------------
 
-  ciphertext = message*E % n
+  ciphertext = message*E % N
 
   Decryption:
   —---------------------------------------------------------------

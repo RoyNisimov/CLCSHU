@@ -868,25 +868,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             msg = OAEP.OAEP.decrypt_BlackFrog(priv, cipher)
             print(msg.rstrip(b'\x00'))
             return
-        elif generate_encrypt_decrypt == 's':
-            with open(priv_file_name, 'r') as f:
-                priv = BlackFrogKey.load(f.read())
-            msg = input("message to sign: \n").encode('utf-8')
-            sig = BlackFrog.sign(priv, msg)
-            file_out = input('Signature file out: ')
-            with open(file_out, 'wb') as f:
-                f.write(sig)
-            return sig
-        elif generate_encrypt_decrypt == 'v':
-            with open(pub_file_name, 'r') as f:
-                pub = BlackFrogKey.load(f.read())
-            file_in = input('Signature file: ')
-            with open(file_in, 'rb') as f:
-                sig = f.read()
-            message = input("the original message: ").encode()
-            verified = BlackFrog.verify(pub,sig,message)
-            if verified: print(f"The message '{message.decode()}' is authentic")
-            else: print(f"The message '{message.decode()}' is not authentic")
+
 
 
     @staticmethod
