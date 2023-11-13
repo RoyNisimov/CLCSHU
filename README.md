@@ -352,11 +352,11 @@ Available algorithms in this section:
 
   Let n = large prime number
 
-  Pick e such that gcd(e,n) == 1 and e < n
+  Pick e such that gcd(e,n) == 1 and e < n and e is prime
   d = e**-1 % n
-  N = n * e
-  E = e**e % N
-  D = d**e % n
+  N = n * e * random
+  E = e**d % N
+  D = d**d % n
 
   Public key: {E,N}
   Private key: {n,d,e,D}
@@ -371,7 +371,8 @@ Available algorithms in this section:
   message = ciphertext*D % n
 
   Known problams:
-  This is insecure. though finding the real D and d is hard, you can easily make a similar key that works.
+  This is probably insecure.
+  
   
   
   
