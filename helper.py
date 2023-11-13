@@ -202,8 +202,7 @@ You might have tried to use the '^' operator in python before, confusing this fo
 
     @staticmethod
     def visit_cryptography_ElGamal():
-        print("WARNING: This is my implementation of ElGamal and OAEP, probably not the safest! Also note that RSA is considered a better asymmetric funtion that can encrypt/decrypt, sign, and key exchange. While ElGamal can only encrypt/decrypt and key exchange")
-        print("I couldn't made signing possible for some reason")
+        print(f"{Bcolors.FAIL}WARNING: This is my implementation of ElGamal and OAEP, probably not the safest! Also note that RSA is considered a better asymmetric funtion that can encrypt/decrypt, sign, and key exchange. While ElGamal can only encrypt/decrypt and key exchange{Bcolors.ENDC}")
         modes = ['Use', 'Info']
         for index, name in enumerate(modes):
             print("{0}: {1}".format(index, name))
@@ -211,7 +210,7 @@ You might have tried to use the '^' operator in python before, confusing this fo
         to_call = modes[index % len(modes)]
         if to_call == 'Use':
             file = input("save file name?\n")
-            user_input = input("Generate, encrypt, decrypt? G/E/D: ").lower()
+            user_input = input("Generate, encrypt, decrypt, sign, verify? G/E/D/S/V: ").lower()
             if user_input == "g":
                 size = input("size? default is 512 (not secure enough)")
                 if len(size) == 0: size = 512
@@ -229,7 +228,7 @@ You might have tried to use the '^' operator in python before, confusing this fo
                         "a": priv.a,
                         "e": priv.e}}
                 with open(file, 'w') as f:
-                    f.write(json.dumps(data))
+                    f.write(json.dumps(data, indent=2))
                 return data
             elif user_input == "e":
                 with open(file, 'r') as f:
@@ -242,7 +241,7 @@ You might have tried to use the '^' operator in python before, confusing this fo
                 file_out = input('file out: ')
                 edata = {"c1": c1, "c2": c2}
                 with open(file_out, 'w') as f:
-                    f.write(json.dumps(edata))
+                    f.write(json.dumps(edata, indent=2))
                 return c1, c2
             elif user_input == "d":
                 with open(file, 'r') as f:
@@ -254,6 +253,33 @@ You might have tried to use the '^' operator in python before, confusing this fo
                 m = OAEP.OAEP.decrypt_ElGamal(key, edata["c1"], edata["c2"])
                 print(m.rstrip(b'\x00'))
                 return m
+            elif user_input == 's':
+                with open(file, 'r') as f:
+                    data = json.loads(f.read())
+                key = ElGamal.ElGamalKey(data['priv']['g'], data['priv']['p'], a=data['priv']['a'], e=data['priv']['e'])
+                msg = input("Message: ").encode()
+                m, s1, s2 = ElGamal.ElGamal.sign(key, msg)
+                print(f"{Bcolors.OKGREEN}{m = }\n{s1 = }\n{s2 = }{Bcolors.ENDC}")
+                file_out = input("File out: ")
+                data = {"m": m, "s1": s1, 's2': s2}
+                with open(file_out, 'w') as f:
+                    f.write(json.dumps(data, indent=2))
+                return m, s1, s2
+            elif user_input == 'v':
+                with open(file, 'r') as f:
+                    data = json.loads(f.read())
+                file_name = input('File in:\n')
+                key = ElGamal.ElGamalKey(data['pub']['g'], data['pub']['p'], e=data['pub']['e'])
+                with open(file_name, 'r') as f:
+                    vdata = json.loads(f.read())
+                ver = ElGamal.ElGamal.verify(key, vdata['m'], vdata['s1'], vdata['s2'])
+                if ver:
+                    print(f"{Bcolors.OKGREEN}Message is verified!{Bcolors.ENDC}")
+                else: print(f"{Bcolors.FAIL}Message is not authentic!{Bcolors.ENDC}")
+                return ver
+
+
+
         elif to_call == 'Info':
             print("""The ElGamal cryptosystem was invented in 1985, by Taher Elgamal.
                 Key Generation
@@ -456,7 +482,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             ciphertext = cipher.encrypt(plaintext)
             nonce = b64encode(cipher.nonce).decode('utf-8')
             ct = b64encode(ciphertext).decode('utf-8')
-            result = json.dumps({'nonce': nonce, 'ciphertext': ct})
+            result = json.dumps({'nonce': nonce, 'ciphertext': ct}, indent=2)
             print(result)
             return result
         elif encrypt_or_decrypt == 'd':

@@ -250,6 +250,26 @@ C2 = (m * y**b) % p
 XM = C1**x % p
 m = (C2 * XM**(p-2)) % p
 
+                             Signing
+------------------------------------------------------------------------
+m = message
+k = 0 < k < p
+s1 = g**k % p
+phi = p - 1
+mod_inv = k ** -1 % phi // pow(k, -1, phi)
+s2 = (mod_inv * (m - x * s1)) % phi
+
+Send {m, s1, s2}
+Keep k private
+
+                             Verifying
+------------------------------------------------------------------------
+V = y**s1 * s1**s2 % p
+W = g**m % p
+If V == W then the message was signed by the private key
+
+
+
                               Example
 ------------------------------------------------------------------------
 
@@ -266,8 +286,21 @@ C2 = (4 * 18**3) % 23 = 6
 XM = 9**8 % 23 = 13
 m = (6 * 13**21) % 23 = 4
 
+Sign 
+m = 5
+k = 3
+s1 = g**k % m = 9
+phi_n = p-1 = 22
+inv = k**-1 % phi_n = 15
+s2 = (inv * (m - x * s1)) % phi_n = 7
+
+Verify
+V = (18**9 * 9**7) % 23 = 2
+W = 6**5 % 23 = 2
+
+The message is authentic
 ```
-The implementation here (not in the maths) uses OAEP (commonly used with RSA). All ElGamal implementation in here was written by me, including the OAEP
+The implementation here (not in the math explanation) uses OAEP (commonly used with RSA). All ElGamal implementation in here was written by me, including the OAEP
 
 
 
