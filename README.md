@@ -393,7 +393,9 @@ Available algorithms in this section:
 
   Public key: {E,N}
   Private key: {n,d,e,D}
-
+  
+  (Note that the signing is basicly RSA)
+  
   Encryption:
   —---------------------------------------------------------------
 

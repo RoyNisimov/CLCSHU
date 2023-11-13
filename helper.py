@@ -869,11 +869,12 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
     def visit_fun_algs_BlackFrog():
         print("""BlackFrog is an asymmetric encryption that I invented (There might be a similar algorithm, the math is not very complicated.)""")
         print(f"""{Bcolors.WARNING}BlackFrog is probably not safe{Bcolors.ENDC}""")
+        print(f"{Bcolors.UNDERLINE}{Bcolors.BOLD}Please note that the signing and verifying is just RSA{Bcolors.ENDC}")
         pub_file_name = input("Public file name: \n")
         priv_file_name = input("Private file name: \n")
-        generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt: G/E/D: \n").lower()
+        generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt, Sign, Verify: G/E/D/S/V: \n").lower()
         if generate_encrypt_decrypt == 'g':
-            pub, priv = BlackFrog.generate_keys(512)
+            pub, priv = BlackFrog.generate_keys(512, True)
             print(pub)
             print(priv)
             with open(pub_file_name, 'w') as f: f.write(pub.export())
@@ -894,6 +895,28 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 cipher = f.read()
             msg = OAEP.OAEP.decrypt_BlackFrog(priv, cipher)
             print(msg.rstrip(b'\x00'))
+            return
+        elif generate_encrypt_decrypt == 's':
+            with open(priv_file_name, 'r') as f:
+                priv = BlackFrogKey.load(f.read())
+            msg = input("message: ").encode()
+            sig = BlackFrog.sign(priv, msg)
+            print(sig)
+            save_file = input("save file:\n")
+            with open(save_file, 'wb') as f:
+                f.write(sig)
+            return
+        elif generate_encrypt_decrypt == 'v':
+            with open(pub_file_name, 'r') as f: pub = BlackFrogKey.load(f.read())
+            file_in = input("File input:\n")
+            with open(file_in, 'rb') as f:
+                sig = f.read()
+            msg = input("message:\n").encode()
+            ver = BlackFrog.verify(pub, sig, msg)
+            if ver:
+                print(f"{Bcolors.OKGREEN}The message '{msg.decode()}' is authentic{Bcolors.ENDC}")
+                return
+            print(f"{Bcolors.FAIL}The message '{msg.decode()}' is not authentic{Bcolors.ENDC}")
             return
 
 
