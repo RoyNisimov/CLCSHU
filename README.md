@@ -354,12 +354,12 @@ Available algorithms in this section:
 
   Pick e such that gcd(e,n) == 1 and e < n
   d = e**-1 % n
-  N = n * e * random_number
-  E = e**e % n
+  N = n * e
+  E = e**e % N
   D = d**e % n
 
   Public key: {E,N}
-  Private key: {p,q,n,d,e,D}
+  Private key: {n,d,e,D}
 
   Encryption:
   —---------------------------------------------------------------
