@@ -347,7 +347,9 @@ Available algorithms in this section:
   - [CHAB Feistel](#chab-feistel)
   - [BlackFrog](#blackfrog)
 - Encryption algs:
- - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
+  - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
+  - [ADD](#add)
+  - [MUL](#mul)
 
 ### My Algorithms
 - [CHA](#cha)
@@ -423,3 +425,17 @@ Available algorithms in this section:
 ### Encryption algs
 - #### Ceaser Cipher / Rot13
   This cipher shifts the letters of the alphabet by 13
+- #### ADD
+  Adds the key to the plaintext
+  ``` 
+  c = m + k
+  m = c - k
+  ```
+- #### MUL
+  Multiplies the key with the plaintext.
+  ``` 
+  c = m * k
+  m = c / k
+  ```
+
+

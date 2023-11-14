@@ -927,7 +927,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         en = string.ascii_lowercase + string.punctuation + string.digits
         en = list(en)
         shuffle = Common.shift_list(en.copy(), 13)
-        encrypt_or_decrypt = input("Do you want to encrypt or decrypt? E/D").lower()
+        encrypt_or_decrypt = input("Do you want to encrypt or decrypt? E/D: ").lower()
         if encrypt_or_decrypt == 'e':
             msg = input("message: ").lower()
             cipher = ''
@@ -937,10 +937,51 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             print(cipher)
             return cipher
         elif encrypt_or_decrypt == 'd':
-            cipher = input("message: ")
+            cipher = input("cipher: ")
             msg = ''
             for ch in cipher:
                 index = shuffle.index(ch)
                 msg += en[index]
             print(msg)
             return msg
+
+    @staticmethod
+    def visit_fun_algs_ADD():
+        print(f"{Bcolors.OKBLUE}Turns your message into int, adds the key as int. returns the bytes{Bcolors.ENDC}")
+        key = input("key: ").encode()
+        key_int = int.from_bytes(key, sys.byteorder)
+        encrypt_or_decrypt = input("Do you want to encrypt or decrypt? E/D: ").lower()
+        if encrypt_or_decrypt == 'e':
+            msg = input("message: ").encode()
+            m_int = int.from_bytes(msg, sys.byteorder)
+            cipher = m_int + key_int
+            print(cipher)
+            return cipher
+        elif encrypt_or_decrypt == 'd':
+            cipher = input("cipher: ")
+            m_int = int(cipher)
+            cipher = m_int - key_int
+            b = cipher.to_bytes(cipher.bit_length(), sys.byteorder).rstrip(b'\x00')
+            print(b)
+            return b
+
+    @staticmethod
+    def visit_fun_algs_MUL():
+        print(f"{Bcolors.OKBLUE}Turns your message into int, multiply the key as int. returns the bytes{Bcolors.ENDC}")
+        key = input("key: ").encode()
+        key_int = int.from_bytes(key, sys.byteorder)
+        encrypt_or_decrypt = input("Do you want to encrypt or decrypt? E/D: ").lower()
+        if encrypt_or_decrypt == 'e':
+            msg = input("message: ").encode()
+            m_int = int.from_bytes(msg, sys.byteorder)
+            cipher = m_int * key_int
+            print(cipher)
+            return cipher
+        elif encrypt_or_decrypt == 'd':
+            cipher = input("cipher: ")
+            m_int = int(cipher)
+            cipher = int(m_int // key_int)
+            b = cipher.to_bytes(cipher.bit_length(), sys.byteorder).rstrip(b'\x00')
+            print(b)
+            return b
+

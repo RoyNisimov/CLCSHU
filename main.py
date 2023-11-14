@@ -72,7 +72,7 @@ _________                            __                                         
     steganography = ["PNG_LSB", "PNG_EOF"]
     hashing = ['Sha256', 'Sha512', 'Sha1', 'Sha384', "Sha224", "BLACK2s", "BLACK2b", "HMAC"]
     fun_algs = {"CHA (Hash)": "CHA", "Generate CHA": "generate_cha_args", 'RA (Hash)': "RA", "Feistel cipher RAB (Symmetric encryption with preset key)": "CHAF_RAB", "Feistel cipher RAB with nonce (Symmetric encryption with preset key and password)": "CHAF_RAB_With_Nonce", "CHA Feistel (Symmetric encryption with a custom key and password)": "CHAF_CHAB_With_Nonce",
-               "BlackFrog (Asymmetric encryption)": "BlackFrog", "Ceaser-Cipher / Rot13": "CeaserCipher"}
+               "BlackFrog (Asymmetric encryption)": "BlackFrog", "Ceaser-Cipher / Rot13": "CeaserCipher", "ADD": "ADD", "MUL": "MUL"}
     branch = ''
     call = Call()
     if csh == '1':
