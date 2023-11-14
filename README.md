@@ -325,7 +325,11 @@ LSB stands for Least Significant Bit.
 You take a message and for each byte of the picture you change the least significant bit of byte and change it to a bit of the message
 
 ## Hashes
+Hashing is the process of transforming any given key or a string of characters into another value. 
 
+This is usually represented by a shorter, fixed-length value or key that represents and makes it easier to find or employ the original string.
+
+The most popular use for hashing is the implementation of hash tables.
 
 ## Fun Algorithms
 Some of the algorithms here were invented by me. 
