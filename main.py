@@ -39,6 +39,13 @@ _________                            __                                         
        \\/       \\/      \\/      \\/          \\/ /_____/                                          \\/                    
 {Bcolors.ENDC}"""
 
+    def print_list(list_name, is_dict=False):
+        for index, name in enumerate(list_name):
+            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
+        index = int(input("Enter choice number: "))
+        if is_dict:
+            return list(list_name.values())[index % len(list_name)]
+        return list_name[index % len(list_name)]
 
     argspars = argparse.ArgumentParser()
     argspars.add_argument("-b", '--branch', type=str, help="The branch of the tool, can be c,s,h,f")
@@ -64,84 +71,61 @@ _________                            __                                         
     call = Call()
     if args.branch == 'c':
         branch = 'cryptography'
-        for index, name in enumerate(cryptography_modes):
-            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-        index = int(input("Enter choice number: "))
-        index = index % len(cryptography_modes)
+        c = print_list(cryptography_modes)
+        index = cryptography_modes.index(c)
         if index == 0:
-            for index, name in enumerate(cryptography_list):
-                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-            index = int(input("Enter choice number: "))
-            call.visit(branch, cryptography_list[index % len(cryptography_list)])
+            c = print_list(cryptography_list)
+            call.visit(branch, c)
         elif index == 1:
             branch += '_vuln'
-            for index, name in enumerate(cryptography_vuln):
-                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-            index = int(input("Enter choice number: "))
-            call.visit(branch, cryptography_vuln[index % len(cryptography_vuln)])
+            c = print_list(cryptography_vuln)
+            call.visit(branch, c)
     elif args.branch == 's':
         branch = 'steganography'
-        for index, name in enumerate(steganography):
-            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-        index = int(input("Enter choice number: "))
-        call.visit(branch, steganography[index % len(steganography)])
+        c = print_list(steganography)
+        call.visit(branch, c)
     elif args.branch == 'h':
         branch = 'hashing'
         print(
             """Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
-        for index, name in enumerate(hashing):
-            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-        index = int(input("Enter choice number: "))
-        call.visit(branch, hashing[index % len(hashing)])
+        c = print_list(hashing)
+        call.visit(branch, c)
     elif args.branch == 'f':
         print("WARNING: not for real use cases, this was made for fun!")
         branch = 'fun_algs'
-        for index, name in enumerate(fun_algs.keys()):
-            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-        index = int(input("Enter choice number: "))
-        call.visit(branch, list(fun_algs.values())[index % len(fun_algs)])
+        c = print_list(fun_algs, True)
+        call.visit(branch, c)
     else:
         csh: str = input(f"""{Bcolors.HEADER}1) Cryptography
 2) Steganography
 3) Hashing
 4) Fun Algorithms (WARNING: not for real use cases){Bcolors.ENDC}
-    """)
+""")
         branch = ''
 
         if csh == '1':
             branch = 'cryptography'
-            for index, name in enumerate(cryptography_modes):
-                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-            index = int(input("Enter choice number: "))
-            index = index % len(cryptography_modes)
+            c = print_list(cryptography_modes)
+            index = cryptography_modes.index(c)
             if index == 0:
-                for index, name in enumerate(cryptography_list):
-                    print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-                index = int(input("Enter choice number: "))
-                call.visit(branch, cryptography_list[index % len(cryptography_list)])
+                c = print_list(cryptography_list)
+                call.visit(branch, c)
             elif index == 1:
                 branch += '_vuln'
-                for index, name in enumerate(cryptography_vuln):
-                    print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-                index = int(input("Enter choice number: "))
-                call.visit(branch, cryptography_vuln[index % len(cryptography_vuln)])
+                c = print_list(cryptography_vuln)
+                call.visit(branch, c)
         elif csh == '2':
             branch = 'steganography'
-            for index, name in enumerate(steganography):
-                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-            index = int(input("Enter choice number: "))
-            call.visit(branch, steganography[index % len(steganography)])
+            c = print_list(steganography)
+            call.visit(branch, c)
         elif csh == '3':
             branch = 'hashing'
-            print("""Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
-            for index, name in enumerate(hashing):
-                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-            index = int(input("Enter choice number: "))
-            call.visit(branch, hashing[index % len(hashing)])
+            print(
+                """Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
+            c = print_list(hashing)
+            call.visit(branch, c)
         elif csh == '4':
             print("WARNING: not for real use cases, this was made for fun!")
             branch = 'fun_algs'
-            for index, name in enumerate(fun_algs.keys()):
-                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-            index = int(input("Enter choice number: "))
-            call.visit(branch, list(fun_algs.values())[index % len(fun_algs)])
+            c = print_list(fun_algs, True)
+            call.visit(branch, c)
