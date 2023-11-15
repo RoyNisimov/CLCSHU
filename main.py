@@ -1,4 +1,4 @@
-
+import argparse
 from CLCSHU.helper import *
 class Bcolors:
     HEADER = '\033[95m'
@@ -39,43 +39,30 @@ _________                            __                                         
        \\/       \\/      \\/      \\/          \\/ /_____/                                          \\/                    
 {Bcolors.ENDC}"""
 
-    def try_auto(m, list_to_auto_comp):
-        if m in list_to_auto_comp:
-            return m
-        filtered_items = list(filter(lambda x: x.startswith(m), list_to_auto_comp))
-        if len(filtered_items) > 1:
-            print('There are more than one auto starting with "{0}"'.format(m))
-            print('Select the auto from choices: ')
-            for _index, _name in enumerate(filtered_items):
-                print("{0}: {1}".format(_index, _name))
 
-            _index = int(input("Enter choice number: "))
-            return filtered_items[index % len(filtered_items)]
-        else:
-            return filtered_items[0]
-
-
+    argspars = argparse.ArgumentParser()
+    argspars.add_argument("-b", '--branch', type=str, help="The branch of the tool, can be c,s,h,f")
+    args = argspars.parse_args()
     print(banner)
     print(
         f"{Bcolors.WARNING}WARNING: This tool was just for fun and learning. In real use cases use something that you know is 100% safe")
     print(f"WARNING: Some of the tools only have ECB mode! check out more info about modes of operation: 'https://www.youtube.com/watch?v=Rk0NIQfEXBA'{Bcolors.ENDC}")
     print(f"{Bcolors.FAIL}This tool was made for fun and learning cryptography and python. {Bcolors.BOLD}DO NOT USE FOR REAL USE CASES{Bcolors.ENDC}")
     print("banner was made with this: 'https://patorjk.com/software/taag/#p=display&h=0&v=0&f=Graffiti&t=Type%20Something%20'")
-    csh: str = input(f"""{Bcolors.HEADER}1) Cryptography
-2) Steganography
-3) Hashing
-4) Fun Algorithms (WARNING: not for real use cases){Bcolors.ENDC}
-""")
     cryptography_modes = ['cryptography', "vulnerabilities"]
-    cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "ChaCha20", "ElGamal", "DSA", "Skipjack"]
+    cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "ChaCha20",
+                         "ElGamal", "DSA", "Skipjack"]
     cryptography_vuln = ["Fermat_Factorization"]
     steganography = ["PNG_LSB", "PNG_EOF"]
     hashing = ['Sha256', 'Sha512', 'Sha1', 'Sha384', "Sha224", "BLACK2s", "BLACK2b", "HMAC"]
-    fun_algs = {"CHA (Hash)": "CHA", "Generate CHA": "generate_cha_args", 'RA (Hash)': "RA", "Feistel cipher RAB (Symmetric encryption with preset key)": "CHAF_RAB", "Feistel cipher RAB with nonce (Symmetric encryption with preset key and password)": "CHAF_RAB_With_Nonce", "CHA Feistel (Symmetric encryption with a custom key and password)": "CHAF_CHAB_With_Nonce",
-               "BlackFrog (Asymmetric encryption)": "BlackFrog", "Ceaser-Cipher / Rot13": "CeaserCipher", "ADD": "ADD", "MUL": "MUL"}
-    branch = ''
+    fun_algs = {"CHA (Hash)": "CHA", "Generate CHA": "generate_cha_args", 'RA (Hash)': "RA",
+                "Feistel cipher RAB (Symmetric encryption with preset key)": "CHAF_RAB",
+                "Feistel cipher RAB with nonce (Symmetric encryption with preset key and password)": "CHAF_RAB_With_Nonce",
+                "CHA Feistel (Symmetric encryption with a custom key and password)": "CHAF_CHAB_With_Nonce",
+                "BlackFrog (Asymmetric encryption)": "BlackFrog", "Ceaser-Cipher / Rot13": "CeaserCipher", "ADD": "ADD",
+                "MUL": "MUL"}
     call = Call()
-    if csh == '1':
+    if args.branch == 'c':
         branch = 'cryptography'
         for index, name in enumerate(cryptography_modes):
             print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
@@ -92,23 +79,69 @@ _________                            __                                         
                 print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
             index = int(input("Enter choice number: "))
             call.visit(branch, cryptography_vuln[index % len(cryptography_vuln)])
-    elif csh == '2':
+    elif args.branch == 's':
         branch = 'steganography'
         for index, name in enumerate(steganography):
             print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
         index = int(input("Enter choice number: "))
         call.visit(branch, steganography[index % len(steganography)])
-    elif csh == '3':
+    elif args.branch == 'h':
         branch = 'hashing'
-        print("""Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
+        print(
+            """Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
         for index, name in enumerate(hashing):
             print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
         index = int(input("Enter choice number: "))
         call.visit(branch, hashing[index % len(hashing)])
-    elif csh == '4':
+    elif args.branch == 'f':
         print("WARNING: not for real use cases, this was made for fun!")
         branch = 'fun_algs'
         for index, name in enumerate(fun_algs.keys()):
             print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
         index = int(input("Enter choice number: "))
         call.visit(branch, list(fun_algs.values())[index % len(fun_algs)])
+    else:
+        csh: str = input(f"""{Bcolors.HEADER}1) Cryptography
+2) Steganography
+3) Hashing
+4) Fun Algorithms (WARNING: not for real use cases){Bcolors.ENDC}
+    """)
+        branch = ''
+
+        if csh == '1':
+            branch = 'cryptography'
+            for index, name in enumerate(cryptography_modes):
+                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
+            index = int(input("Enter choice number: "))
+            index = index % len(cryptography_modes)
+            if index == 0:
+                for index, name in enumerate(cryptography_list):
+                    print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
+                index = int(input("Enter choice number: "))
+                call.visit(branch, cryptography_list[index % len(cryptography_list)])
+            elif index == 1:
+                branch += '_vuln'
+                for index, name in enumerate(cryptography_vuln):
+                    print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
+                index = int(input("Enter choice number: "))
+                call.visit(branch, cryptography_vuln[index % len(cryptography_vuln)])
+        elif csh == '2':
+            branch = 'steganography'
+            for index, name in enumerate(steganography):
+                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
+            index = int(input("Enter choice number: "))
+            call.visit(branch, steganography[index % len(steganography)])
+        elif csh == '3':
+            branch = 'hashing'
+            print("""Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
+            for index, name in enumerate(hashing):
+                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
+            index = int(input("Enter choice number: "))
+            call.visit(branch, hashing[index % len(hashing)])
+        elif csh == '4':
+            print("WARNING: not for real use cases, this was made for fun!")
+            branch = 'fun_algs'
+            for index, name in enumerate(fun_algs.keys()):
+                print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
+            index = int(input("Enter choice number: "))
+            call.visit(branch, list(fun_algs.values())[index % len(fun_algs)])

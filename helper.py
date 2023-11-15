@@ -30,7 +30,7 @@ class Call:
         :type branch_name: str
         """
         to_call = getattr(self, 'visit_' + branch_name + "_" + method_name, None)
-        if to_call is None: raise Exception(f"No method named {method_name} found in the {branch_name} branch_name!")
+        if to_call is None: raise Exception(f"No method named {method_name} found in the {branch_name} branch name!")
         to_call()
 
     #   --------------Cryptography start--------------
