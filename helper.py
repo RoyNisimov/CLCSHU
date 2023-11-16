@@ -546,7 +546,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
 
     @staticmethod
     def visit_cryptography_vuln_Fermat_Factorization():
-        print("Fermat Factorization is a way to break weak rsa keys where the p and the q are too close together")
+        print("Fermat Factorization is a way to break weak RSA keys where the p and the q are too close together")
         print("With bigger keys this will take a long time, so I recommend you to try with small keys ")
         print("More info here: 'https://www.youtube.com/watch?v=-ShwJqAalOk'")
         n = int(input('N:\n'))
@@ -570,6 +570,17 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         print(f"{e = }")
         print(f"{d = }")
         return p, q, n, pn, e, d
+
+    @staticmethod
+    def visit_cryptography_vuln_known_message_XOR():
+        print(f"{Bcolors.BOLD}{Bcolors.UNDERLINE}Before we begin, please use repeated key XOR{Bcolors.ENDC}")
+        print(f"{Bcolors.BOLD}{Bcolors.UNDERLINE}{Bcolors.OKGREEN}This method does XOR with the ciphertext and the message to get the key{Bcolors.ENDC}")
+        print(f"{Bcolors.BOLD}{Bcolors.UNDERLINE}{Bcolors.FAIL}You might get more than one key, for example if your message was 'test' and the key was 'key', the cipher text will be '1f000a1f' in bytes. But after running through the function the key is going to be 'keyk'{Bcolors.ENDC}")
+        c1 = bytes.fromhex(input("Cipher: "))
+        m = input("Message: ").encode()
+        key = Common.repeated_key_xor(m, c1).decode()
+        print(f"{Bcolors.OKGREEN}The key is: '{key}'{Bcolors.ENDC}")
+        return key
 
     #   --------------Steganography start--------------
 

@@ -27,6 +27,10 @@ Then you can follow the instructions.
     * [ChaCha20](https://www.youtube.com/watch?v=UeIpq-C-GSA)
     * [ElGamal](#elgamal)
     * [DSA](https://youtu.be/bO4lEQfPn60?t=386)
+    * [SkipJack](https://www.youtube.com/watch?v=cMm5cd-WB2s)
+    * [Cryptography Vulnerabilities](#cryptography-vulnerabilities)
+      * [Fermat Factorization](#fermat-factorization) 
+      * [Known Message XOR](#known-message-xor) 
   * [Steganography](#steganography)
     * [PNGs](#pngs)
   * [Hashes](#hashes)
@@ -66,7 +70,9 @@ Right now the available algorithms in the cryptography section are:
 * [ElGamal](#elgamal)
 * [DSA](https://youtu.be/bO4lEQfPn60?t=386)
 * [SkipJack](https://www.youtube.com/watch?v=cMm5cd-WB2s)
-
+* [Cryptography Vulnerabilities](#cryptography-vulnerabilities)
+      * [Fermat Factorization](#fermat-factorization) 
+      * [Known Message XOR](#known-message-xor) 
 Also note that some of the algorithms listed above are implemented using my code.
 
 ### Repeated key xor
@@ -301,6 +307,23 @@ W = 6**5 % 23 = 2
 The message is authentic
 ```
 The implementation here (not in the math explanation) uses OAEP (commonly used with RSA). All ElGamal implementation in here was written by me, including the OAEP
+
+
+
+### Cryptography Vulnerabilities
+* #### Fermat Factorization
+   Fermat Factorization is a way to break weak RSA keys where the p and the q are too close together
+   For more info click [here](https://www.youtube.com/watch?v=-ShwJqAalOk)
+* #### Known Message XOR
+   Known message XOR is a way to get the key if you know the ciphertext and the plaintext.
+
+   You might get more than one key, for example if your message was 'test' and the key was 'key', the cipher text will be '1f000a1f' in bytes. But after running through the function the key is going to be 'keyk'
+
+
+
+
+
+
 
 
 

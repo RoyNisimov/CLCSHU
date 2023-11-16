@@ -39,10 +39,11 @@ _________                            __                                         
        \\/       \\/      \\/      \\/          \\/ /_____/                                          \\/                    
 {Bcolors.ENDC}"""
 
-    def print_list(list_name, is_dict=False):
+    def print_list(list_name):
         for index, name in enumerate(list_name):
             print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
         index = int(input("Enter choice number: "))
+        is_dict = isinstance(list_name, dict)
         if is_dict:
             return list(list_name.values())[index % len(list_name)]
         return list_name[index % len(list_name)]
@@ -59,7 +60,7 @@ _________                            __                                         
     cryptography_modes = ['cryptography', "vulnerabilities"]
     cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "ChaCha20",
                          "ElGamal", "DSA", "Skipjack"]
-    cryptography_vuln = ["Fermat_Factorization"]
+    cryptography_vuln = {"Fermat Factorization (In RSA)": "Fermat_Factorization", "Known message XOR attack": "known_message_XOR"}
     steganography = ["PNG_LSB", "PNG_EOF"]
     hashing = ['Sha256', 'Sha512', 'Sha1', 'Sha384', "Sha224", "BLACK2s", "BLACK2b", "HMAC"]
     fun_algs = {"CHA (Hash)": "CHA", "Generate CHA": "generate_cha_args", 'RA (Hash)': "RA",
@@ -93,7 +94,7 @@ _________                            __                                         
     elif args.branch == 'f':
         print("WARNING: not for real use cases, this was made for fun!")
         branch = 'fun_algs'
-        c = print_list(fun_algs, True)
+        c = print_list(fun_algs)
         call.visit(branch, c)
     else:
         csh: str = input(f"""{Bcolors.HEADER}1) Cryptography
@@ -127,5 +128,5 @@ _________                            __                                         
         elif csh == '4':
             print("WARNING: not for real use cases, this was made for fun!")
             branch = 'fun_algs'
-            c = print_list(fun_algs, True)
+            c = print_list(fun_algs)
             call.visit(branch, c)
