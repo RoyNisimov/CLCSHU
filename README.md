@@ -71,8 +71,9 @@ Right now the available algorithms in the cryptography section are:
 * [DSA](https://youtu.be/bO4lEQfPn60?t=386)
 * [SkipJack](https://www.youtube.com/watch?v=cMm5cd-WB2s)
 * [Cryptography Vulnerabilities](#cryptography-vulnerabilities)
-      * [Fermat Factorization](#fermat-factorization) 
-      * [Known Message XOR](#known-message-xor) 
+  * [Fermat Factorization](#fermat-factorization) 
+  * [Known Message XOR](#known-message-xor) 
+
 Also note that some of the algorithms listed above are implemented using my code.
 
 ### Repeated key xor
