@@ -1,7 +1,7 @@
 import random
 import sys
 import math
-from CLCSHU.my_cryptography.Global import PrimeNumberGenerator
+from my_cryptography.Global import PrimeNumberGenerator
 
 
 class ElGamalKey:
