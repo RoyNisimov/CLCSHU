@@ -996,3 +996,17 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             print(b)
             return b
 
+    @staticmethod
+    def visit_fun_algs_BASE64():
+        print(f"{Bcolors.OKBLUE}This uses the built in python base64{Bcolors.ENDC}")
+        encrypt_or_decrypt = input("Do you want to encrypt or decrypt? E/D: ").lower()
+        if encrypt_or_decrypt == 'e':
+            msg = input("message: ").encode()
+            cipher = b64encode(msg)
+            print(cipher)
+            return cipher
+        elif encrypt_or_decrypt == 'd':
+            cipher = input("cipher: ")
+            msg = b64decode(cipher)
+            print(msg)
+            return msg

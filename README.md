@@ -35,6 +35,19 @@ Then you can follow the instructions.
     * [PNGs](#pngs)
   * [Hashes](#hashes)
   * [Fun Algorithms](#fun-algorithms)
+    * [CHA](#cha)
+    - [Generate CHA](#generate-cha)
+    - [RA (Hash)](#ra)
+    - [Feistel cipher RAB](#feistel-cipher-rab)
+    - [Feistel cipher RAB with nonce](#feistel-cipher-rab-with-nonce)
+    - [CHAB Feistel](#chab-feistel)
+    - [BlackFrog](#blackfrog)
+    - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
+    - [ADD](#add)
+    - [MUL](#mul)
+    - [Base 64](#base-64)
+  * [Adding to the tool](#adding-to-the-tool)
+
 
 # Terminology
 
@@ -374,6 +387,7 @@ Available algorithms in this section:
   - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
   - [ADD](#add)
   - [MUL](#mul)
+  - [Base 64](#base-64)
 
 ### My Algorithms
 - [CHA](#cha)
@@ -461,5 +475,21 @@ Available algorithms in this section:
   c = m * k
   m = c / k
   ```
+- #### Base 64
+  Uses the builtin python base64.
+  
+  Base 64 is a counting system like base 10 (0 - 9) or binary / base 2 (0, 1)
+
+# Adding to the tool
+If you want to add to the tool, go to the helper.py script and add to the Call class a staticmethod that starts with visit_
+then add the branch name and the method call name. like this:
+```python
+class Call:
+    @staticmethod
+    def visit_BRANCHNAME_METHODNAME():
+        # do stuff
+        return
+```
+And finally add the method name to the right list in main.py.
 
 
