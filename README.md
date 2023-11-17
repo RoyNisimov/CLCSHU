@@ -46,6 +46,7 @@ Then you can follow the instructions.
     - [ADD](#add)
     - [MUL](#mul)
     - [Base 64](#base-64)
+    - [Base 2 / Binary](#base-2)
   * [Adding to the tool](#adding-to-the-tool)
 
 
@@ -388,6 +389,7 @@ Available algorithms in this section:
   - [ADD](#add)
   - [MUL](#mul)
   - [Base 64](#base-64)
+  - [Base 2 / Binary](#base-2)
 
 ### My Algorithms
 - [CHA](#cha)
@@ -479,6 +481,9 @@ Available algorithms in this section:
   Uses the builtin python base64.
   
   Base 64 is a counting system like base 10 (0 - 9) or binary / base 2 (0, 1)
+
+- #### Base 2
+  Translates the message into binary
 
 # Adding to the tool
 If you want to add to the tool, go to the helper.py script and add to the Call class a staticmethod that starts with visit_

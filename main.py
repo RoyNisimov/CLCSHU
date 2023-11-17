@@ -68,7 +68,7 @@ _________                            __                                         
                 "Feistel cipher RAB with nonce (Symmetric encryption with preset key and password)": "CHAF_RAB_With_Nonce",
                 "CHA Feistel (Symmetric encryption with a custom key and password)": "CHAF_CHAB_With_Nonce",
                 "BlackFrog (Asymmetric encryption)": "BlackFrog", "Ceaser-Cipher / Rot13": "CeaserCipher", "ADD": "ADD",
-                "MUL": "MUL", "Base 64": "BASE64"}
+                "MUL": "MUL", "Base 64": "BASE64", "Binary / Base 2": "Binary"}
     call = Call()
     if args.branch == 'c':
         branch = 'cryptography'

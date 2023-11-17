@@ -1010,3 +1010,17 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             msg = b64decode(cipher)
             print(msg)
             return msg
+
+    @staticmethod
+    def visit_fun_algs_Binary():
+        encrypt_or_decrypt = input("Do you want to encrypt or decrypt? E/D: ").lower()
+        if encrypt_or_decrypt == 'e':
+            msg = input("message: ")
+            cipher = " ".join([format(ord(c), 'b') for c in msg])
+            print(cipher)
+            return cipher
+        elif encrypt_or_decrypt == 'd':
+            cipher = input("cipher: ")
+            msg = ''.join([chr(int(c, 2)) for c in cipher.split(" ")])
+            print(msg)
+            return msg
