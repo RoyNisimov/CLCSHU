@@ -7,10 +7,10 @@ import hashlib
 import ast
 import math
 from cryptography.fernet import Fernet
-from CLCSHU.Steganography.PNGs import LSB
-from CLCSHU.Steganography.PNGs import EOF
-from CLCSHU.my_cryptography import ElGamal, OAEP, Skipjack
-from CLCSHU.my_cryptography.Global import Common
+from Steganography.PNGs import LSB
+from Steganography.PNGs import EOF
+from my_cryptography import ElGamal, OAEP, Skipjack
+from my_cryptography.Global import Common
 import json
 # pycryptodome:
 from Crypto.Random import get_random_bytes
