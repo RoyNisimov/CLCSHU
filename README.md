@@ -47,6 +47,7 @@ Then you can follow the instructions.
     - [MUL](#mul)
     - [Base 64](#base-64)
     - [Base 2 / Binary](#base-2)
+    - [Shuffle](#shuffle)
   * [Adding to the tool](#adding-to-the-tool)
 
 
@@ -390,6 +391,7 @@ Available algorithms in this section:
   - [MUL](#mul)
   - [Base 64](#base-64)
   - [Base 2 / Binary](#base-2)
+  - [Shuffle](#shuffle)
 
 ### My Algorithms
 - [CHA](#cha)
@@ -484,6 +486,10 @@ Available algorithms in this section:
 
 - #### Base 2
   Translates the message into binary
+
+- #### Shuffle
+  Swaps the message letters with the keys letters
+
 
 # Adding to the tool
 If you want to add to the tool, go to the helper.py script and add to the Call class a staticmethod that starts with visit_

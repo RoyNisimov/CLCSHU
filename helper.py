@@ -1,4 +1,5 @@
 import sys
+import random
 from main import Bcolors
 import CHA
 from CHA import BlackFrog, BlackFrogKey, OAEP
@@ -1022,5 +1023,38 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         elif encrypt_or_decrypt == 'd':
             cipher = input("cipher: ")
             msg = ''.join([chr(int(c, 2)) for c in cipher.split(" ")])
+            print(msg)
+            return msg
+
+    @staticmethod
+    def visit_fun_algs_Shuffle():
+        english = list(string.ascii_letters + string.punctuation + string.digits)
+        encrypt_or_decrypt = input("Do you want to generate, encrypt or decrypt? G/E/D: ").lower()
+        if encrypt_or_decrypt == 'g':
+            file_name = input('File name: ')
+            new1 = english.copy()
+            random.shuffle(new1)
+            print(new1)
+            date = {"key": new1}
+            with open(file_name, 'w') as f: f.write(json.dumps(date, indent=2))
+        elif encrypt_or_decrypt == 'e':
+            file_name = input('Key file name: ')
+            with open(file_name, 'r') as f: data = json.loads(f.read())
+            msg = input('message: ')
+            cipher = ''
+            for i, c in enumerate(msg):
+                index = english.index(c)
+                cipher += data['key'][index]
+            print(cipher)
+            return cipher
+        elif encrypt_or_decrypt == 'd':
+            file_name = input('Key file name: ')
+            with open(file_name, 'r') as f:
+                data = json.loads(f.read())
+            cipher = input("Cipher: ")
+            msg = ''
+            for i, c in enumerate(cipher):
+                index = data['key'].index(c)
+                msg += english[index]
             print(msg)
             return msg
