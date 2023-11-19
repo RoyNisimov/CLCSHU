@@ -356,6 +356,9 @@ Right now the available algorithms in the steganography-PNGs section are:
 
 There is a StegExample file for you to try
 
+![Image](StegExample.png)
+
+
 #### EOF
 EOF stands for End Of File. It just means that you append the message bytes to the end of the png file
 
