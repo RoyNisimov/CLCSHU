@@ -494,6 +494,7 @@ Available algorithms in this section:
 
 - #### Morse Code
   Does Morse Code translation
+  
   ![Morse Code](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/International_Morse_Code.svg/260px-International_Morse_Code.svg.png)
 
 # Adding to the tool
