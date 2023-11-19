@@ -48,6 +48,7 @@ Then you can follow the instructions.
     - [Base 64](#base-64)
     - [Base 2 / Binary](#base-2)
     - [Shuffle](#shuffle)
+    - [Morse Code](#morse-code)
   * [Adding to the tool](#adding-to-the-tool)
 
 
@@ -392,6 +393,7 @@ Available algorithms in this section:
   - [Base 64](#base-64)
   - [Base 2 / Binary](#base-2)
   - [Shuffle](#shuffle)
+  - [Morse Code](#morse-code)
 
 ### My Algorithms
 - [CHA](#cha)
@@ -490,6 +492,9 @@ Available algorithms in this section:
 - #### Shuffle
   Swaps the message letters with the keys letters
 
+- #### Morse Code
+  Does Morse Code translation
+  ![Morse Code](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/International_Morse_Code.svg/260px-International_Morse_Code.svg.png)
 
 # Adding to the tool
 If you want to add to the tool, go to the helper.py script and add to the Call class a staticmethod that starts with visit_

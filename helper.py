@@ -10,8 +10,9 @@ import math
 from cryptography.fernet import Fernet
 from Steganography.PNGs import LSB
 from Steganography.PNGs import EOF
-from my_cryptography import ElGamal, OAEP, Skipjack
+from my_cryptography import ElGamal, OAEP, Skipjack, MorseCode
 from my_cryptography.Global import Common
+from Exeptions import InputException
 import json
 # pycryptodome:
 from Crypto.Random import get_random_bytes
@@ -1056,5 +1057,30 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             for i, c in enumerate(cipher):
                 index = data['key'].index(c)
                 msg += english[index]
+            print(msg)
+            return msg
+
+    @staticmethod
+    def visit_fun_algs_MorseCode():
+        encrypt_or_decrypt = input("Do you want to encrypt or decrypt? E/D: ").lower()
+        if encrypt_or_decrypt == 'e':
+            msg = input("message: ")
+            split = input("split: space or newline? S/N: ").lower()
+            if split == "s": split = ' '
+            elif split == 'n': split = "\n"
+            else: raise InputException("Input is not S or N!")
+            cipher = MorseCode.MorseCode.encrypt(msg, split)
+            print(cipher)
+            return cipher
+        elif encrypt_or_decrypt == 'd':
+            cipher = input("cipher: ")
+            split = input("split: space or newline? S/N: ").lower()
+            if split == "s":
+                split = ' '
+            elif split == 'n':
+                split = "\n"
+            else:
+                raise InputException("Input is not S or N!")
+            msg = MorseCode.MorseCode.decrypt(cipher, split)
             print(msg)
             return msg
