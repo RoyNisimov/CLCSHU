@@ -1,4 +1,4 @@
-import random
+import secrets
 import sys
 import math
 from my_cryptography.Global import PrimeNumberGenerator
@@ -13,7 +13,7 @@ class ElGamalKey:
 
     @staticmethod
     def construct(g, p):
-        a = random.randint(2, p - 2)
+        a = secrets.SystemRandom().randint(2, p - 2)
         e = pow(g, a, p)
         return ElGamalKey(g, p, a, e)
 
@@ -25,15 +25,15 @@ class ElGamal:
     @staticmethod
     def generate_keys(n_bits=512):
         p = PrimeNumberGenerator.GeneratePrime(n_bits)
-        g = random.randint(2, p - 2)
-        a = random.randint(2, p - 2)
+        g = secrets.SystemRandom().randint(2, p - 2)
+        a = secrets.SystemRandom().randint(2, p - 2)
         e = pow(g, a, p)
         return ElGamalKey(g, p, e=e), ElGamalKey(g, p, a, e)
 
     @staticmethod
     def encrypt(key: ElGamalKey, message: bytes):
         msg_int = int.from_bytes(message, sys.byteorder)
-        b = random.randint(2, key.p - 2)
+        b = secrets.SystemRandom().randint(2, key.p - 2)
         c1 = pow(key.g, b, key.p)
         c2 = (msg_int * pow(key.e, b, key.p)) % key.p
 
@@ -50,8 +50,8 @@ class ElGamal:
     @staticmethod
     def sign(key: ElGamalKey, message: bytes):
         m = int.from_bytes(message, sys.byteorder)
-        k = random.randint(2, key.p - 2)
-        while math.gcd(k, key.p - 1) != 1: k = random.randint(2, key.p - 2)
+        k = secrets.SystemRandom().randint(2, key.p - 2)
+        while math.gcd(k, key.p - 1) != 1: k = secrets.SystemRandom().randint(2, key.p - 2)
         s1 = pow(key.g, k, key.p)
         phi_n = key.p - 1
         inv = pow(k, -1, phi_n)

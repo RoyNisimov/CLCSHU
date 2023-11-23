@@ -1,5 +1,5 @@
 import hashlib
-import random
+import secrets
 import sys
 from my_cryptography import ElGamal
 from CHA import BlackFrog, BlackFrogKey
@@ -25,7 +25,7 @@ class OAEP:
 
     @staticmethod
     def encrypt(msg, n, pub):
-        nonce = random.getrandbits(32)
+        nonce = secrets.randbits(32)
         nonce = nonce.to_bytes(32, sys.byteorder)
         oaep = OAEP.oaep_pad(msg, nonce)
         m_int = int.from_bytes(oaep, sys.byteorder)
@@ -47,7 +47,7 @@ class OAEP:
 
     @staticmethod
     def encrypt_ElGamal(key: ElGamal.ElGamalKey, msg):
-        nonce = random.getrandbits(32)
+        nonce = secrets.randbits(32)
         nonce = nonce.to_bytes(32, sys.byteorder)
         oaep = OAEP.oaep_pad(msg, nonce)
         oaep_int = int.from_bytes(oaep, sys.byteorder)
@@ -67,7 +67,7 @@ class OAEP:
 
     @staticmethod
     def encrypt_BlackFrog(key: BlackFrogKey, msg: bytes):
-        nonce = random.getrandbits(32)
+        nonce = secrets.randbits(32)
         nonce = nonce.to_bytes(32, sys.byteorder)
         oaep = OAEP.oaep_pad(msg, nonce)
         oaep_int = int.from_bytes(oaep, sys.byteorder)
@@ -86,13 +86,13 @@ class OAEP:
         return mm
 
 if __name__ == '__main__':
-    pub, priv = BlackFrog.generate_keys(512)
+    pub, priv = ElGamal.ElGamal.generate_keys(1024)
     print(pub)
     print(priv)
 
     msg = b'test'
 
-    c = OAEP.encrypt_BlackFrog(pub, msg)
-    print(c)
-    m = OAEP.decrypt_BlackFrog(priv, c).rstrip(b'\x00')
+    c1, c2 = OAEP.encrypt_ElGamal(pub, msg)
+    print(c1, c2)
+    m = OAEP.decrypt_ElGamal(priv, c1, c2).rstrip(b'\x00')
     print(m)

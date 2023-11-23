@@ -214,8 +214,8 @@ You might have tried to use the '^' operator in python before, confusing this fo
             file = input("save file name?\n")
             user_input = input("Generate, encrypt, decrypt, sign, verify? G/E/D/S/V: ").lower()
             if user_input == "g":
-                size = input("size? default is 512 (not secure enough)")
-                if len(size) == 0: size = 512
+                size = input("size? default is 1024 (not secure enough)")
+                if len(size) == 0: size = 1024
                 else:
                     size = int(size)
                 pub, priv = ElGamal.ElGamal.generate_keys(size)
