@@ -817,6 +817,44 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             return e, d.decode().strip()
 
     @staticmethod
+    def visit_fun_algs_CHAF_RAB_With_Nonce_OAEP():
+        print("More info on CHA: 'https://github.com/RoyNisimov1/CHA'")
+        nonce = input("nonce: ").encode()
+        s = input("Message:\n")
+        both_or_encrypt_or_decrypt = input("Encrypt, decrypt, or both. E/D/B:\n").lower()
+        if both_or_encrypt_or_decrypt == 'e':
+            key = input("HMAC key:\n").encode()
+            h = CHA.CHAFHMAC(key, CHA.CHAObject.RAB)
+            h.update(s.encode())
+            mac = h.hexdigest()
+            padded = OAEP.OAEP.oaep_pad(s.encode())
+            obj = CHA.FeistelN().DE(padded, 8, CHA.FeistelN().fRAB_with_nonce(nonce), 'e', 's')
+            print(obj)
+            print(f"mac:\n{mac}")
+            return obj
+        elif both_or_encrypt_or_decrypt == 'd':
+            mac = input("HMAC:\n")
+            key = input("HMAC key:\n").encode()
+            obj = CHA.FeistelN().DE(s, 8, CHA.FeistelN().fRAB_with_nonce(nonce), 'd', 's')
+            h = CHA.CHAFHMAC(key, CHA.CHAObject.RAB)
+            obj = OAEP.OAEP.oaep_unpad(obj).rstrip(b"\x00")
+            h.update(obj)
+            if h.verify(mac):
+                print(f"{Bcolors.OKGREEN}The message '{obj.decode()}' is authentic{Bcolors.ENDC}")
+            else:
+                print(f"{Bcolors.FAIL}{Bcolors.BOLD}The message '{obj.decode()}' is not authentic{Bcolors.ENDC}")
+            print(obj.decode())
+            return obj
+        elif both_or_encrypt_or_decrypt == 'b':
+            padded = OAEP.OAEP.oaep_pad(s.encode())
+            e = CHA.FeistelN().DE(padded, 8, CHA.FeistelN().fRAB_with_nonce(nonce), 'e', 's')
+            print(e)
+            d = CHA.FeistelN().DE(e, 8, CHA.FeistelN().fRAB_with_nonce(nonce), 'd', 's')
+            d = OAEP.OAEP.oaep_unpad(d).rstrip(b"\x00")
+            print(d.decode())
+            return e, d.decode()
+
+    @staticmethod
     def visit_fun_algs_CHAF_CHAB_With_Nonce():
         print("More info on CHA: 'https://github.com/RoyNisimov1/CHA'")
         padding = input("Padding:\n")
