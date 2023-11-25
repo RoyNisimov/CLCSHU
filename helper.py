@@ -10,7 +10,7 @@ import math
 from cryptography.fernet import Fernet
 from Steganography.PNGs import LSB
 from Steganography.PNGs import EOF
-from my_cryptography import ElGamal, OAEP, Skipjack, MorseCode
+from my_cryptography import ElGamal, OAEP, Skipjack, MorseCode, BaseConverter
 from my_cryptography.Global import Common
 from Exeptions import InputException
 import json
@@ -1122,3 +1122,42 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             msg = MorseCode.MorseCode.decrypt(cipher, split)
             print(msg)
             return msg
+
+    @staticmethod
+    def visit_fun_algs_BaseConverter():
+        encrypt_or_decrypt = input("Do you want to Base10 to base ?, Base ? to base 10, base ?1 to base ?2, B10/TB10/BB: \n").lower()
+        if encrypt_or_decrypt == 'b10':
+            msg = input("message: ").encode()
+            base = int(input("Base: "))
+            character_sheet = None
+            if base >= 16:
+                character_sheet = input("character sheet: ")
+            msg_int = Common.bti(msg)
+            final = BaseConverter.BaseConverter.convertFromBase10(msg_int, base, character_sheet)
+            print(final)
+            return final
+        elif encrypt_or_decrypt == 'tb10':
+            cipher = input("cipher: ")
+            base = int(input("Base: "))
+            character_sheet = None
+            if base >= 16:
+                character_sheet = input("character sheet: ")
+            final = BaseConverter.BaseConverter.to_dec(cipher, base, character_sheet)
+            final = Common.itb(final)
+            print(final)
+            return final
+        elif encrypt_or_decrypt == 'bb':
+            msg = input("message: ").encode()
+            base1 = int(input("Base1: "))
+            base2 = int(input("Base2: "))
+            character_sheet1 = None
+            if base1 >= 16:
+                character_sheet1 = input("character sheet1: ")
+            character_sheet2 = None
+            if base2 >= 16:
+                character_sheet2 = input("character sheet2: ")
+            final = BaseConverter.BaseConverter.base_to_base(msg, base1, base2, character_sheet1, character_sheet2)
+            print(final)
+            return final
+        else:
+            raise InputException("Invalid Input! input can be: 'B10', 'TB10' or 'BB'")

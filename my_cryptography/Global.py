@@ -2,6 +2,15 @@ import secrets
 import sys
 class Common:
     @staticmethod
+    def itb(i: int):
+        if i is None: return b"\x00"
+        return i.to_bytes(i.bit_length(), sys.byteorder).rstrip(b"\x00")
+
+    @staticmethod
+    def bti(b: bytes):
+        if b is None: return None
+        return int.from_bytes(b, sys.byteorder)
+    @staticmethod
     def xor(data, key):
         data_i = int.from_bytes(data, sys.byteorder)
         key_i = int.from_bytes(key, sys.byteorder)
