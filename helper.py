@@ -925,7 +925,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         priv_file_name = input("Private file name: \n")
         generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt, Sign, Verify: G/E/D/S/V: \n").lower()
         if generate_encrypt_decrypt == 'g':
-            pub, priv = BlackFrog.generate_keys(512, True)
+            pub, priv = BlackFrog.generate_keys(1024, True)
             print(pub)
             print(priv)
             with open(pub_file_name, 'w') as f: f.write(pub.export())
