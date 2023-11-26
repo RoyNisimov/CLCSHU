@@ -920,6 +920,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
     def visit_fun_algs_BlackFrog():
         print("""BlackFrog is an asymmetric encryption that I invented (There might be a similar algorithm, the math is not very complicated.)""")
         print(f"""{Bcolors.WARNING}BlackFrog is probably not safe{Bcolors.ENDC}""")
+        print(f"""{Bcolors.FAIL}{Bcolors.BOLD}The PEM exporting is my code, and my algorithm. again, this isn't secure!{Bcolors.ENDC}""")
         print(f"{Bcolors.UNDERLINE}{Bcolors.BOLD}Please note that the signing and verifying is just RSA{Bcolors.ENDC}")
         pub_file_name = input("Public file name: \n")
         priv_file_name = input("Private file name: \n")
@@ -928,11 +929,12 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             pub, priv = BlackFrog.generate_keys(1024, True)
             print(pub)
             print(priv)
-            with open(pub_file_name, 'w') as f: f.write(pub.export())
-            with open(priv_file_name, 'w') as f: f.write(priv.export())
+            passcode = input("Passcode: ").encode()
+            with open(pub_file_name, 'wb') as f: f.write(pub.export())
+            with open(priv_file_name, 'wb') as f: f.write(priv.export(passcode))
             return
         elif generate_encrypt_decrypt == 'e':
-            with open(pub_file_name, 'r') as f: pub = BlackFrogKey.load(f.read())
+            with open(pub_file_name, 'rb') as f: pub = BlackFrogKey.load(f.read())
             msg = input("message:\n").encode()
             c = OAEP.OAEP.encrypt_BlackFrog(pub, msg)
             print(c)
@@ -940,7 +942,8 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             with open(save_file, 'wb') as f: f.write(c)
             return
         elif generate_encrypt_decrypt == 'd':
-            with open(priv_file_name, 'r') as f: priv = BlackFrogKey.load(f.read())
+            passcode = input("Passcode: ").encode()
+            with open(priv_file_name, 'rb') as f: priv = BlackFrogKey.load(f.read(), passcode)
             file_in = input("File input:\n")
             with open(file_in, 'rb') as f:
                 cipher = f.read()
@@ -948,8 +951,9 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             print(msg.rstrip(b'\x00'))
             return
         elif generate_encrypt_decrypt == 's':
-            with open(priv_file_name, 'r') as f:
-                priv = BlackFrogKey.load(f.read())
+            passcode = input("Passcode: ").encode()
+            with open(priv_file_name, 'rb') as f:
+                priv = BlackFrogKey.load(f.read(), passcode)
             msg = input("message: ").encode()
             sig = BlackFrog.sign(priv, msg)
             print(sig)
