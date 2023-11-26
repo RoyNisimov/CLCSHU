@@ -69,7 +69,7 @@ _________                            __                                         
                 "Feistel cipher RAB with nonce and OAEP (Symmetric encryption with preset key and password and OAEP padding)": "CHAF_RAB_With_Nonce_OAEP",
                 "CHA Feistel (Symmetric encryption with a custom key and password)": "CHAF_CHAB_With_Nonce",
                 "BlackFrog (Asymmetric encryption)": "BlackFrog", "Ceaser-Cipher / Rot13": "CeaserCipher", "ADD": "ADD",
-                "MUL": "MUL", "Base 64": "BASE64", "Binary / Base 2": "Binary", "Base Converter": "BaseConverter", "Shuffle": "Shuffle", "Morse Code": "MorseCode"}
+                "MUL": "MUL", "Base 64": "BASE64", "Binary / Base 2": "Binary", "Base Converter": "BaseConverter", "Shuffle": "Shuffle", "Morse Code": "MorseCode", "ElGamal": "ElGamal"}
     call = Call()
     if args.branch == 'c':
         branch = 'cryptography'

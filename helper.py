@@ -204,14 +204,20 @@ You might have tried to use the '^' operator in python before, confusing this fo
 
     @staticmethod
     def visit_cryptography_ElGamal():
-        print(f"{Bcolors.FAIL}WARNING: This is my implementation of ElGamal and OAEP, probably not the safest! Also note that RSA is considered a better asymmetric funtion that can encrypt/decrypt, sign, and key exchange. While ElGamal can only encrypt/decrypt and key exchange{Bcolors.ENDC}")
+        print(f"""{Bcolors.FAIL}{Bcolors.BOLD}WARNING: This is my implementation of ElGamal and OAEP, probably not the safest! Also note that RSA is considered a better asymmetric encryption.
+Also the key exportation is using my code with my algorithm (Not safe!).
+{Bcolors.ENDC}""")
+        print(f"""{Bcolors.FAIL}{Bcolors.BOLD}WARNING: ElGamal encryption is being used, but this is probably not safe here because it's my code.
+Again, if this is for real use-cases use something else
+{Bcolors.ENDC}""")
         modes = ['Use', 'Info']
         for index, name in enumerate(modes):
             print("{0}: {1}".format(index, name))
         index = int(input("Enter choice number: "))
         to_call = modes[index % len(modes)]
         if to_call == 'Use':
-            file = input("save file name?\n")
+            pub_key = input("Public file name (.pem will be appended):\n") + '.pem'
+            priv_key = input("Private file name (.pem will be appended):\n") + '.pem'
             user_input = input("Generate, encrypt, decrypt, sign, verify? G/E/D/S/V: ").lower()
             if user_input == "g":
                 size = input("size? default is 1024 (not secure enough)")
@@ -220,23 +226,19 @@ You might have tried to use the '^' operator in python before, confusing this fo
                     size = int(size)
                 pub, priv = ElGamal.ElGamal.generate_keys(size)
                 print(f'{pub = }\n{priv = }')
-                data = {"pub": {
-                        "p": pub.p,
-                        "g": pub.g,
-                        "e": pub.e},
-                    "priv": {
-                        "p": priv.p,
-                        "g": priv.g,
-                        "a": priv.a,
-                        "e": priv.e}}
-                with open(file, 'w') as f:
-                    f.write(json.dumps(data, indent=2))
-                return data
+                passcode = input("passcode: ").encode()
+                key = priv.export_key(passcode)
+                with open(priv_key, 'wb') as f:
+                    f.write(key)
+                key = pub.export_key()
+                with open(pub_key, 'wb') as f:
+                    f.write(key)
+                return
             elif user_input == "e":
-                with open(file, 'r') as f:
-                    data = json.loads(f.read())
+                with open(pub_key, 'rb') as f:
+                    key = ElGamal.ElGamalKey.import_key(f.read())
+                print(key)
                 m = input('message:\n').encode('utf-8')
-                key = ElGamal.ElGamalKey(data['pub']['g'], data['pub']['p'], e=data['pub']['e'])
                 c1, c2 = OAEP.OAEP.encrypt_ElGamal(key, m)
                 print(c1)
                 print(c2)
@@ -246,19 +248,21 @@ You might have tried to use the '^' operator in python before, confusing this fo
                     f.write(json.dumps(edata, indent=2))
                 return c1, c2
             elif user_input == "d":
-                with open(file, 'r') as f:
-                    data = json.loads(f.read())
+                passcode = input("Passcode: ").encode()
+                with open(priv_key, 'rb') as f:
+                    key = ElGamal.ElGamalKey.import_key(f.read(), passcode)
+                print(key)
                 file_in = input('file in:\n')
                 with open(file_in, 'r') as f:
                     edata = json.loads(f.read())
-                key = ElGamal.ElGamalKey(data['priv']['g'], data['priv']['p'], a=data['priv']['a'], e=data['priv']['e'])
                 m = OAEP.OAEP.decrypt_ElGamal(key, edata["c1"], edata["c2"])
                 print(m.rstrip(b'\x00'))
                 return m
             elif user_input == 's':
-                with open(file, 'r') as f:
-                    data = json.loads(f.read())
-                key = ElGamal.ElGamalKey(data['priv']['g'], data['priv']['p'], a=data['priv']['a'], e=data['priv']['e'])
+                passcode = input("Passcode: ").encode()
+                with open(priv_key, 'rb') as f:
+                    key = ElGamal.ElGamalKey.import_key(f.read(), passcode)
+
                 msg = input("Message: ").encode()
                 m, s1, s2 = ElGamal.ElGamal.sign(key, msg)
                 print(f"{Bcolors.OKGREEN}{m = }\n{s1 = }\n{s2 = }{Bcolors.ENDC}")
@@ -268,10 +272,9 @@ You might have tried to use the '^' operator in python before, confusing this fo
                     f.write(json.dumps(data, indent=2))
                 return m, s1, s2
             elif user_input == 'v':
-                with open(file, 'r') as f:
-                    data = json.loads(f.read())
+                with open(pub_key, 'rb') as f:
+                    key = ElGamal.ElGamalKey.import_key(f.read())
                 file_name = input('File in:\n')
-                key = ElGamal.ElGamalKey(data['pub']['g'], data['pub']['p'], e=data['pub']['e'])
                 with open(file_name, 'r') as f:
                     vdata = json.loads(f.read())
                 ver = ElGamal.ElGamal.verify(key, vdata['m'], vdata['s1'], vdata['s2'])
@@ -284,47 +287,84 @@ You might have tried to use the '^' operator in python before, confusing this fo
 
         elif to_call == 'Info':
             print("""The ElGamal cryptosystem was invented in 1985, by Taher Elgamal.
-                Key Generation
-----------------------------------------------
-Let P be a prime number
-Let G = 1 < G < P-1 (G must be a primitive root if you want signing)
-Let X = 1 < X < P-1 (Private key)
-Then calculate Y:
-Y = G**X mod P
-Public: {P,G,Y}
-Private: {X}
+                        The math of ElGamal
+------------------------------------------------------------------------
 
-                Encryption
-----------------------------------------------
-M: your message (as a number, M < P -1)
-Let B = 1 < B < P - 1
-Then calculate:
-C1 = G**B mod P
-C2 = (M * Y**B) mod P
-Then the cipher text is: {C1, C2}
+                          Key Generation
+------------------------------------------------------------------------
+Let p = large prime number
+Let g = 1 < g < p-1
+Let x = 1 < x < p-1
+Let y = g**x % p
 
-                Decryption
-----------------------------------------------
-XM = C1**X mod P
-M = (C2 * XM**(P-2)) mod P
-                  Example
-----------------------------------------------
-P = 23
-G = 7
-X = 15
-Y = 7**15 mod 23 = 14
+Public = {p,g,y}
+Private = {x}
 
-Public: {P = 23, G = 7, Y = 14}
-Private: {X = 15}
+                            Encryption
+------------------------------------------------------------------------
 
-M = 4
-B = 10
-C1 = 7**10 mod 23 = 13
-C2 = 4 * 14**10 mod 23 = 3
+m = message < p
+Let b = 2 < b < p-1
+C1 = g**b % p
+C2 = (m * y**b) % p
 
-XM = 13 ** 15 mod 23 = 18
-M = 3 * 18**21 mod 23 = 4
-----------------------------------------------
+                            Decryption
+------------------------------------------------------------------------
+
+XM = C1**x % p
+m = (C2 * XM**(p-2)) % p
+
+                             Signing
+------------------------------------------------------------------------
+m = message
+k = 0 < k < p
+s1 = g**k % p
+phi = p - 1
+mod_inv = k ** -1 % phi // pow(k, -1, phi)
+s2 = (mod_inv * (m - x * s1)) % phi
+
+Send {m, s1, s2}
+Keep k private
+
+                             Verifying
+------------------------------------------------------------------------
+V = y**s1 * s1**s2 % p
+W = g**m % p
+If V == W then the message was signed by the private key
+
+
+
+                              Example
+------------------------------------------------------------------------
+
+Let p = 23
+Let g = 6
+Let x = 8
+Let y = 6**8 % 23 = 18
+
+m = 4
+Let b = 3
+C1 = 6**3 % 23 = 9
+C2 = (4 * 18**3) % 23 = 6
+
+XM = 9**8 % 23 = 13
+m = (6 * 13**21) % 23 = 4
+
+Sign 
+m = 5
+k = 3
+s1 = g**k % m = 9
+phi_n = p-1 = 22
+inv = k**-1 % phi_n = 15
+s2 = (inv * (m - x * s1)) % phi_n = 7
+
+Verify
+V = (18**9 * 9**7) % 23 = 2
+W = 6**5 % 23 = 2
+
+W == V: True 
+The message is authentic
+------------------------------------------------------------------------
 
 Please note that this variation of ElGamal uses OAEP (commonly used with RSA)
 """)
@@ -1165,3 +1205,9 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             return final
         else:
             raise InputException("Invalid Input! input can be: 'B10', 'TB10' or 'BB'")
+
+    @staticmethod
+    def visit_fun_algs_ElGamal():
+        print(f"{Bcolors.WARNING}I'm also putting ElGamal here because it's using my code and the exportation is using my algorithm. (Probably not secure){Bcolors.ENDC}")
+        Call.visit_cryptography_ElGamal()
+        return

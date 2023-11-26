@@ -2,8 +2,8 @@ import secrets
 import sys
 import math
 from my_cryptography.Global import PrimeNumberGenerator
-
-
+from CHA import PEM
+import json
 class ElGamalKey:
     def __init__(self, g, p, a=None, e=None):
         self.g = g
@@ -16,6 +16,22 @@ class ElGamalKey:
         a = secrets.SystemRandom().randint(2, p - 2)
         e = pow(g, a, p)
         return ElGamalKey(g, p, a, e)
+
+
+    def export_key(self, passcode=b'\x00'):
+        data = {"g": self.g, "p": self.p, "a": self.a, "e": self.e}
+        d = json.dumps(data).encode()
+        marker = b'ElGamal '
+        if self.a: marker += b"PRIVATE"
+        else: marker += b"PUBLIC"
+        marker += b" KEY"
+        return PEM.export_PEM(d, passcode, marker)
+
+    @staticmethod
+    def import_key(b: bytes, passcode=b'\x00'):
+        p = PEM.import_PEM(b, passcode)
+        d = json.loads(p)
+        return ElGamalKey(g=d["g"], p=d["p"],a=d["a"], e=d["e"])
 
     def __repr__(self):
         return f"{self.g = }\n{self.p = }\n{self.a = }\n{self.e = }\n"
