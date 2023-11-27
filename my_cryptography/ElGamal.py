@@ -2,7 +2,9 @@ import secrets
 import sys
 import math
 from my_cryptography.Global import PrimeNumberGenerator
+from my_cryptography.BaseConverter import BaseConverter
 from CHA import PEM
+
 import json
 class ElGamalKey:
     def __init__(self, g, p, a=None, e=None):
@@ -31,7 +33,7 @@ class ElGamalKey:
     def import_key(b: bytes, passcode=b'\x00'):
         p = PEM.import_PEM(b, passcode)
         d = json.loads(p)
-        return ElGamalKey(g=d["g"], p=d["p"],a=d["a"], e=d["e"])
+        return ElGamalKey(g=d["g"], p=d["p"], a=d["a"], e=d["e"])
 
     def __repr__(self):
         return f"{self.g = }\n{self.p = }\n{self.a = }\n{self.e = }\n"
@@ -52,12 +54,15 @@ class ElGamal:
         b = secrets.SystemRandom().randint(2, key.p - 2)
         c1 = pow(key.g, b, key.p)
         c2 = (msg_int * pow(key.e, b, key.p)) % key.p
-
-        return c1, c2
+        e1 = BaseConverter.convertFromBase10(c1, 64)
+        e2 = BaseConverter.convertFromBase10(c2, 64)
+        return e1, e2
 
     @staticmethod
-    def decrypt(key: ElGamalKey, c1: int, c2: int):
+    def decrypt(key: ElGamalKey, e1: int, e2: int):
         assert key.a is not None
+        c1 = BaseConverter.to_dec(e1, 64)
+        c2 = BaseConverter.to_dec(e2, 64)
         x = pow(c1, key.a, key.p)
         m = (c2 * pow(x, key.p - 2, key.p)) % key.p
         m_bytes = m.to_bytes(m.bit_length(), sys.byteorder)
