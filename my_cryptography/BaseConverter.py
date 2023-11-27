@@ -1,4 +1,3 @@
-import base64
 from math import log
 import string
 # https://www.youtube.com/watch?v=s3mxIcr7fOQ
@@ -6,7 +5,7 @@ import string
 class BaseConverter:
     @staticmethod
     def convertFromBase10(num, base, baseCharSet=None):
-        if baseCharSet is None: baseCharSet = "0123456789" + string.ascii_letters + "+/"
+        if baseCharSet is None or baseCharSet == '': baseCharSet = "0123456789" + string.ascii_letters + "+/"
         assert base <= len(baseCharSet)
         numToChar = {i: baseCharSet[i] for i in range(len(baseCharSet))}
         power = int(log(num, base))
@@ -19,7 +18,7 @@ class BaseConverter:
 
     @staticmethod
     def to_dec(num, base, baseCharSet=None):
-        if baseCharSet is None: baseCharSet = "0123456789" + string.ascii_letters + "+/"
+        if baseCharSet is None or baseCharSet == '': baseCharSet = "0123456789" + string.ascii_letters + "+/"
         assert base <= len(baseCharSet)
         numToChar = {baseCharSet[i]: i for i in range(len(baseCharSet))}
         n = 0

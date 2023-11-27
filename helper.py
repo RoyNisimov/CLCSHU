@@ -1191,14 +1191,14 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             print(final)
             return final
         elif encrypt_or_decrypt == 'bb':
-            msg = input("message: ").encode()
+            msg = input("message: ")
             base1 = int(input("Base1: "))
             base2 = int(input("Base2: "))
             character_sheet1 = None
-            if base1 >= 16:
+            if base1 > 64:
                 character_sheet1 = input("character sheet1: ")
             character_sheet2 = None
-            if base2 >= 16:
+            if base2 > 64:
                 character_sheet2 = input("character sheet2: ")
             final = BaseConverter.BaseConverter.base_to_base(msg, base1, base2, character_sheet1, character_sheet2)
             print(final)
