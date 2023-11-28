@@ -962,8 +962,8 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         print(f"""{Bcolors.WARNING}BlackFrog is probably not safe{Bcolors.ENDC}""")
         print(f"""{Bcolors.FAIL}{Bcolors.BOLD}The PEM exporting is my code, and my algorithm. again, this isn't secure!{Bcolors.ENDC}""")
         print(f"{Bcolors.UNDERLINE}{Bcolors.BOLD}Please note that the signing and verifying is just RSA{Bcolors.ENDC}")
-        pub_file_name = input("Public file name: \n")
-        priv_file_name = input("Private file name: \n")
+        pub_file_name = input("Public file name (.pem will be appended) : \n") + '.pem'
+        priv_file_name = input("Private file name (.pem will be appended): \n") + '.pem'
         generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt, Sign, Verify: G/E/D/S/V: \n").lower()
         if generate_encrypt_decrypt == 'g':
             pub, priv = BlackFrog.generate_keys(1024, True)
