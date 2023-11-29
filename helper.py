@@ -17,13 +17,13 @@ import json
 # pycryptodome:
 from Crypto.Random import get_random_bytes
 from Crypto.Protocol.KDF import PBKDF2
-from Crypto.Cipher import AES, PKCS1_OAEP, ChaCha20, DES
+from Crypto.Cipher import AES, PKCS1_OAEP, ChaCha20, DES, Blowfish
 from Crypto.Util.Padding import pad, unpad
 from Crypto.PublicKey import RSA, DSA
 from base64 import b64encode, b64decode
 from Crypto.Hash import BLAKE2b, BLAKE2s, SHA256, HMAC
 from Crypto.Signature import DSS
-
+from struct import pack, unpack
 
 class Call:
     def visit(self, branch_name: str, method_name: str):
@@ -230,6 +230,34 @@ You might have tried to use the '^' operator in python before, confusing this fo
             return plain
         else:
             raise InputException("Input can be E or D! ")
+
+    @staticmethod
+    def visit_cryptography_Blowfish():
+        print(f"{Bcolors.FAIL}Blowfish is deemed secure and it is fast. However, its keys should be chosen to be big enough to withstand a brute force attack (e.g. at least 16 bytes). Use AES instead.{Bcolors.ENDC}")
+        user_input = input("Encrypt, decrypt. E/D: ").lower()
+        key = input("16 bit key: ").encode()
+        if user_input == 'e':
+            bs = Blowfish.block_size
+            cipher = Blowfish.new(key, Blowfish.MODE_CBC)
+            plaintext = input("Message: ").encode()
+            plen = bs - len(plaintext) % bs
+            padding = [plen] * plen
+            padding = pack('b' * plen, *padding)
+            msg = cipher.iv + cipher.encrypt(plaintext + padding)
+            file = input("File out: ")
+            with open(file, 'wb') as f:
+                f.write(msg)
+        elif user_input == 'd':
+            file = input("File in: ")
+            with open(file, 'rb') as f:
+                iv = f.read(8)
+                c = f.read()
+            cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv=iv)
+            packed_msg = cipher.decrypt(c)
+            unpacked_msg = packed_msg
+            print(unpacked_msg)
+            return unpacked_msg
+
 
     @staticmethod
     def visit_cryptography_ElGamal():

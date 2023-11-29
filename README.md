@@ -29,6 +29,7 @@ Then you can follow the instructions.
     * [ElGamal](#elgamal)
     * [DSA](https://youtu.be/bO4lEQfPn60?t=386)
     * [SkipJack](https://www.youtube.com/watch?v=cMm5cd-WB2s)
+    * [Blowfish](https://www.youtube.com/watch?v=gz8AV0bPaOU)
     * [Cryptography Vulnerabilities](#cryptography-vulnerabilities)
       * [Fermat Factorization](#fermat-factorization) 
       * [Known Message XOR](#known-message-xor) 

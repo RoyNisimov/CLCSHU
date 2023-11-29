@@ -59,7 +59,7 @@ _________                            __                                         
     print("banner was made with this: 'https://patorjk.com/software/taag/#p=display&h=0&v=0&f=Graffiti&t=Type%20Something%20'")
     cryptography_modes = ['cryptography', "vulnerabilities"]
     cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "DES", "ChaCha20",
-                         "ElGamal", "DSA", "Skipjack"]
+                         "ElGamal", "DSA", "Skipjack", "Blowfish"]
     cryptography_vuln = {"Fermat Factorization (In RSA)": "Fermat_Factorization", "Known message XOR attack": "known_message_XOR"}
     steganography = ["PNG_LSB", "PNG_EOF"]
     hashing = ['Sha256', 'Sha512', 'Sha1', 'Sha384', "Sha224", "BLACK2s", "BLACK2b", "HMAC"]
@@ -104,8 +104,8 @@ _________                            __                                         
 4) Fun Algorithms (WARNING: not for real use cases){Bcolors.ENDC}
 """)
         branch = ''
-
-        if csh == '1':
+        csh = int(csh) % 4
+        if csh == 1:
             branch = 'cryptography'
             c = print_list(cryptography_modes)
             index = cryptography_modes.index(c)
@@ -116,17 +116,17 @@ _________                            __                                         
                 branch += '_vuln'
                 c = print_list(cryptography_vuln)
                 call.visit(branch, c)
-        elif csh == '2':
+        elif csh == 2:
             branch = 'steganography'
             c = print_list(steganography)
             call.visit(branch, c)
-        elif csh == '3':
+        elif csh == 3:
             branch = 'hashing'
             print(
                 """Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
             c = print_list(hashing)
             call.visit(branch, c)
-        elif csh == '4':
+        elif csh == 0:
             print("WARNING: not for real use cases, this was made for fun!")
             branch = 'fun_algs'
             c = print_list(fun_algs)
