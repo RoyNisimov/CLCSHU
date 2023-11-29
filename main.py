@@ -58,7 +58,7 @@ _________                            __                                         
     print(f"{Bcolors.FAIL}This tool was made for fun and learning cryptography and python. {Bcolors.BOLD}DO NOT USE FOR REAL USE CASES{Bcolors.ENDC}")
     print("banner was made with this: 'https://patorjk.com/software/taag/#p=display&h=0&v=0&f=Graffiti&t=Type%20Something%20'")
     cryptography_modes = ['cryptography', "vulnerabilities"]
-    cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "ChaCha20",
+    cryptography_list = ['repeated_key_xor', 'ByteToIntXOR', 'Feistel64XOR', 'Fernet', 'RSA', "AES_256", "DES", "ChaCha20",
                          "ElGamal", "DSA", "Skipjack"]
     cryptography_vuln = {"Fermat Factorization (In RSA)": "Fermat_Factorization", "Known message XOR attack": "known_message_XOR"}
     steganography = ["PNG_LSB", "PNG_EOF"]

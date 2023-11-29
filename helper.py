@@ -17,7 +17,7 @@ import json
 # pycryptodome:
 from Crypto.Random import get_random_bytes
 from Crypto.Protocol.KDF import PBKDF2
-from Crypto.Cipher import AES, PKCS1_OAEP, ChaCha20
+from Crypto.Cipher import AES, PKCS1_OAEP, ChaCha20, DES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.PublicKey import RSA, DSA
 from base64 import b64encode, b64decode
@@ -201,6 +201,35 @@ You might have tried to use the '^' operator in python before, confusing this fo
         'https://dev.to/wrongbyte/cryptography-basics-breaking-repeated-key-xor-ciphertext-1fm2'
 
                     """)
+
+    @staticmethod
+    def visit_cryptography_DES():
+        print(f"{Bcolors.FAIL}DES (Data Encryption Standard) is considered broken and shouldn't really be used anymore. Use AES instead.{Bcolors.ENDC}")
+        print(f"{Bcolors.FAIL}This uses the Pycryptodome single DES implementation{Bcolors.ENDC}")
+        user_input = input("Encrypt, decrypt. E/D: ").lower()
+        key = input("8 bit key: ")
+        if 8 > len(key) > 0:
+            key += ' ' * (8 - len(key))
+        if len(key) > 8: key = key[:8]
+        key = key.encode()
+        if user_input == 'e':
+            cipher = DES.new(key, DES.MODE_OFB)
+            plaintext = pad(input("Message: ").encode(), DES.block_size)
+            c = cipher.iv + cipher.encrypt(plaintext)
+            file_out = input("File out: ")
+            with open(file_out, "wb") as f: f.write(c)
+            return c
+        elif user_input == 'd':
+            file_in = input("File in: ")
+            with open(file_in, 'rb') as f:
+                iv = f.read(8)
+                encrypted = f.read()
+            cipher = DES.new(key, DES.MODE_OFB, iv=iv)
+            plain = unpad(cipher.decrypt(encrypted), DES.block_size)
+            print(plain)
+            return plain
+        else:
+            raise InputException("Input can be E or D! ")
 
     @staticmethod
     def visit_cryptography_ElGamal():

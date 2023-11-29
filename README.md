@@ -24,6 +24,7 @@ Then you can follow the instructions.
     * [Fernet](https://cryptography.io/en/latest/fernet/)
     * [RSA](#rsa)
     * [AES - Computerphile](https://www.youtube.com/watch?v=O4xNJsjtN6E), [AES - Spanning Tree](https://www.youtube.com/watch?v=C4ATDMIz5wc)
+    * [DES](https://en.wikipedia.org/wiki/Data_Encryption_Standard)
     * [ChaCha20](https://www.youtube.com/watch?v=UeIpq-C-GSA)
     * [ElGamal](#elgamal)
     * [DSA](https://youtu.be/bO4lEQfPn60?t=386)
