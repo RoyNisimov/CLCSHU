@@ -1207,26 +1207,26 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             f"{Bcolors.WARNING}This is my encryption algorithm, more info here: 'https://github.com/RoyNisimov1/CHA'{Bcolors.ENDC}")
         encrypt_or_decrypt = input(
             "Encrypt, decrypt. E/D: \n").lower()
-        modeOfOperation = input("Mode of operation, EBC/CBC/GCM: ").lower()
+        modeOfOperation = input("Mode of operation, ECB/CBC/GCM: ").lower()
         key = input('Key: ').encode()
-        cipher = Piranha.new(key, Piranha.EBC)
+        cipher = Piranha(key, Piranha.ECB)
         if encrypt_or_decrypt == 'e':
             msg = Piranha.pad(input('Message: ').encode(), Piranha.BlockSize)
-            if modeOfOperation == 'ebc':
+            if modeOfOperation == 'ecb':
                 c = cipher.encrypt(msg)
                 print(c)
                 file = input("File: ")
                 with open(file, 'wb') as f: f.write(c)
                 return c
             if modeOfOperation == 'cbc':
-                cipher = Piranha.new(key, Piranha.CBC)
+                cipher = Piranha(key, Piranha.CBC)
                 c = cipher.encrypt(msg)
                 print(cipher.iv + c)
                 file = input("File: ")
                 with open(file, 'wb') as f: f.write(cipher.iv + c)
                 return c
             if modeOfOperation == 'gcm':
-                cipher = Piranha.new(key, Piranha.GCM)
+                cipher = Piranha(key, Piranha.GCM)
                 c = cipher.encrypt(msg)
                 print(cipher.iv + c)
 
@@ -1236,7 +1236,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
 
         elif encrypt_or_decrypt == 'd':
             file = input("File: ")
-            if modeOfOperation == 'ebc':
+            if modeOfOperation == 'ecb':
                 with open(file, 'rb') as f:
                     data = f.read()
                 d = Piranha.unpad(cipher.decrypt(data))
