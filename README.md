@@ -43,6 +43,7 @@ Then you can follow the instructions.
     - [Feistel cipher RAB](#feistel-cipher-rab)
     - [Feistel cipher RAB with nonce](#feistel-cipher-rab-with-nonce)
     - [CHAB Feistel](#chab-feistel)
+    - [Piranha](#piranha)
     - [BlackFrog](#blackfrog)
     - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
     - [ADD](#add)
@@ -392,6 +393,7 @@ Available algorithms in this section:
 - [Feistel cipher RAB with nonce](#feistel-cipher-rab-with-nonce)
 - [CHAB Feistel](#chab-feistel)
 - [BlackFrog](#blackfrog)
+- [Piranha](#piranha)
 
 * #### CHA
   CHA stands for Customizable Hashing Algorithm.
@@ -454,6 +456,19 @@ Available algorithms in this section:
   Please keep in mind that things might change.
 
   Also, this implementation uses OAEP and the key size is 512.
+
+* #### Piranha
+  I made this cipher using the RAB-Feistel network.
+  
+  I made this to learn about [modes of operation](https://www.youtube.com/watch?v=Rk0NIQfEXBA).
+  
+  Right now the available modes are:
+  
+  * ECB
+  * CBC
+  * GCM
+
+  For more info click [here](https://github.com/RoyNisimov1/CHA#piranha)
 
 ### Encryption algs
 - #### Ceaser Cipher / Rot13

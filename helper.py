@@ -2,7 +2,7 @@ import sys
 import random
 from main import Bcolors
 import CHA
-from CHA import BlackFrog, BlackFrogKey, OAEP
+from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha
 import string
 import hashlib
 import ast
@@ -974,9 +974,9 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         print(f"{Bcolors.UNDERLINE}{Bcolors.BOLD}Please note that the signing and verifying is just RSA{Bcolors.ENDC}")
         pub_file_name = input("Public file name (.pem will be appended) : \n") + '.pem'
         priv_file_name = input("Private file name (.pem will be appended): \n") + '.pem'
-        generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt, Sign, Verify: G/E/D/S/V: \n").lower()
+        generate_encrypt_decrypt = input("Generate, Encrypt, Decrypt: G/E/D: \n").lower()
         if generate_encrypt_decrypt == 'g':
-            pub, priv = BlackFrog.generate_keys(1024, True)
+            pub, priv = BlackFrog.generate_keys(1024)
             print(pub)
             print(priv)
             passcode = input("Passcode: ").encode()
@@ -999,29 +999,6 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 cipher = f.read()
             msg = OAEP.OAEP.decrypt_BlackFrog(priv, cipher)
             print(msg.rstrip(b'\x00'))
-            return
-        elif generate_encrypt_decrypt == 's':
-            passcode = input("Passcode: ").encode()
-            with open(priv_file_name, 'rb') as f:
-                priv = BlackFrogKey.load(f.read(), passcode)
-            msg = input("message: ").encode()
-            sig = BlackFrog.sign(priv, msg)
-            print(sig)
-            save_file = input("save file:\n")
-            with open(save_file, 'wb') as f:
-                f.write(sig)
-            return
-        elif generate_encrypt_decrypt == 'v':
-            with open(pub_file_name, 'r') as f: pub = BlackFrogKey.load(f.read())
-            file_in = input("File input:\n")
-            with open(file_in, 'rb') as f:
-                sig = f.read()
-            msg = input("message:\n").encode()
-            ver = BlackFrog.verify(pub, sig, msg)
-            if ver:
-                print(f"{Bcolors.OKGREEN}The message '{msg.decode()}' is authentic{Bcolors.ENDC}")
-                return
-            print(f"{Bcolors.FAIL}The message '{msg.decode()}' is not authentic{Bcolors.ENDC}")
             return
 
 
@@ -1069,6 +1046,8 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             b = cipher.to_bytes(cipher.bit_length(), sys.byteorder).rstrip(b'\x00')
             print(b)
             return b
+        else:
+            raise InputException("Input can be E/D!")
 
     @staticmethod
     def visit_fun_algs_MUL():
@@ -1221,3 +1200,65 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         print(f"{Bcolors.WARNING}I'm also putting ElGamal here because it's using my code and the exportation is using my algorithm. (Probably not secure){Bcolors.ENDC}")
         Call.visit_cryptography_ElGamal()
         return
+
+    @staticmethod
+    def visit_fun_algs_Piranha():
+        print(
+            f"{Bcolors.WARNING}This is my encryption algorithm, more info here: 'https://github.com/RoyNisimov1/CHA'{Bcolors.ENDC}")
+        encrypt_or_decrypt = input(
+            "Encrypt, decrypt. E/D: \n").lower()
+        modeOfOperation = input("Mode of operation, EBC/CBC/GCM: ").lower()
+        key = input('Key: ').encode()
+        cipher = Piranha.new(key, Piranha.EBC)
+        if encrypt_or_decrypt == 'e':
+            msg = Piranha.pad(input('Message: ').encode(), Piranha.BlockSize)
+            if modeOfOperation == 'ebc':
+                c = cipher.encrypt(msg)
+                print(c)
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(c)
+                return c
+            if modeOfOperation == 'cbc':
+                cipher = Piranha.new(key, Piranha.CBC)
+                c = cipher.encrypt(msg)
+                print(cipher.iv + c)
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(cipher.iv + c)
+                return c
+            if modeOfOperation == 'gcm':
+                cipher = Piranha.new(key, Piranha.GCM)
+                c = cipher.encrypt(msg)
+                print(cipher.iv + c)
+
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(cipher.iv + c)
+                return c
+
+        elif encrypt_or_decrypt == 'd':
+            file = input("File: ")
+            if modeOfOperation == 'ebc':
+                with open(file, 'rb') as f:
+                    data = f.read()
+                d = Piranha.unpad(cipher.decrypt(data))
+                print(d)
+                return d
+            if modeOfOperation == 'cbc':
+                with open(file, 'rb') as f:
+                    iv = f.read(16)
+                    data = f.read()
+                cipher = Piranha(key, Piranha.CBC, iv=iv)
+                d = Piranha.unpad(cipher.decrypt(data))
+                print(d)
+                return d
+            if modeOfOperation == 'gcm':
+                with open(file, 'rb') as f:
+                    iv = f.read(16)
+                    data = f.read()
+                cipher = Piranha(key, Piranha.GCM, iv=iv)
+                d = Piranha.unpad(cipher.decrypt(data))
+                print(d)
+                return d
+
+        else:
+            raise InputException("Invalid Input! input can be: 'B10', 'TB10' or 'BB'")
+
