@@ -80,7 +80,6 @@ but sometimes an IV only needs to be unpredictable or unique.
 Right now the available algorithms in the cryptography section are:
 
 * [Repeated Key Xor](#repeated-key-xor)
-* [Byte To Int XOR](#byte-to-int-xor)
 * [Feistel64XOR](#feistel64xor)
 * [Fernet](https://cryptography.io/en/latest/fernet/)
 * [RSA](#rsa)
