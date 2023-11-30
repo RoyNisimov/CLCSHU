@@ -23,7 +23,6 @@ from Crypto.PublicKey import RSA, DSA
 from base64 import b64encode, b64decode
 from Crypto.Hash import BLAKE2b, BLAKE2s, SHA256, HMAC
 from Crypto.Signature import DSS
-from struct import pack, unpack
 
 class Call:
     def visit(self, branch_name: str, method_name: str):
@@ -237,13 +236,10 @@ You might have tried to use the '^' operator in python before, confusing this fo
         user_input = input("Encrypt, decrypt. E/D: ").lower()
         key = input("16 bit key: ").encode()
         if user_input == 'e':
-            bs = Blowfish.block_size
             cipher = Blowfish.new(key, Blowfish.MODE_CBC)
             plaintext = input("Message: ").encode()
-            plen = bs - len(plaintext) % bs
-            padding = [plen] * plen
-            padding = pack('b' * plen, *padding)
-            msg = cipher.iv + cipher.encrypt(plaintext + padding)
+            plaintext = pad(plaintext, Blowfish.block_size)
+            msg = cipher.iv + cipher.encrypt(plaintext)
             file = input("File out: ")
             with open(file, 'wb') as f:
                 f.write(msg)
@@ -254,7 +250,7 @@ You might have tried to use the '^' operator in python before, confusing this fo
                 c = f.read()
             cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv=iv)
             packed_msg = cipher.decrypt(c)
-            unpacked_msg = packed_msg
+            unpacked_msg = unpad(packed_msg, Blowfish.block_size)
             print(unpacked_msg)
             return unpacked_msg
 
