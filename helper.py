@@ -156,50 +156,7 @@ You might have tried to use the '^' operator in python before, confusing this fo
             print(output)
             return output
 
-    @staticmethod
-    def visit_cryptography_ByteToIntXOR():
-        modes = ['Info', 'Use']
-        for index, name in enumerate(modes):
-            print("{0}: {1}".format(index, name))
-        index = int(input("Enter choice number: "))
-        to_call = modes[index % len(modes)]
-        if to_call == 'Use':
 
-            plain = input("Message:\n")
-            key = input("Key:\n").encode()
-            input_type = input("Input plaintext in hex or utf-8? H/U ").lower()
-            if input_type == 'u':
-                plain = plain.encode()
-            elif input_type == 'h':
-                plain = bytes.fromhex(plain)
-            xor = Common.xor(plain, key)
-            type1 = input("hex or bytes? H/B\n").lower()
-            if type1 == 'h':
-                print(xor.hex())
-                return xor.hex()
-            elif type1 == 'b':
-                print(xor)
-                return xor
-        if to_call == 'Info':
-            print("""
-                                        XOR
-        ------------------------------------------------------------------------
-        XOR is a logic gate that is use heavily in cryptography
-
-        ------------------
-          A  |  B  | OUT |
-        ------------------
-          0  |  1  |  1  |
-          0  |  0  |  0  |
-          1  |  1  |  0  |
-          1  |  0  |  1  |
-        ------------------
-
-        You might have tried to use the '^' operator in python before, confusing this for the power operator. '^' is the XOR operator.
-
-        'https://dev.to/wrongbyte/cryptography-basics-breaking-repeated-key-xor-ciphertext-1fm2'
-
-                    """)
 
     @staticmethod
     def visit_cryptography_DES():

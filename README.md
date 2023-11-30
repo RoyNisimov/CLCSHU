@@ -151,23 +151,6 @@ class XOR:
 
 Source: [Encrypt using XOR Cipher with Repeating Key](https://www.geeksforgeeks.org/encrypt-using-xor-cipher-with-repeating-key/)
 
-### Byte To Int XOR
-
-Byte to Int XOR (I don't know the official name) is similar to the [Repeated key xor](#repeated-key-xor),
-but it uses the ^ operator.
-
-The implementation code
-```python
-import sys
-class XOR:
-    @staticmethod
-    def xor(data, key):
-        data_i = int.from_bytes(data, sys.byteorder)
-        key_i = int.from_bytes(key, sys.byteorder)
-        x = data_i ^ key_i
-        x_byte = x.to_bytes(x.bit_length(), sys.byteorder).rstrip(b"\x00")
-        return x_byte
-```
 
 ### Feistel64XOR
 Feistel64XOR is based on [Feistel Networks](https://www.youtube.com/watch?v=FGhj3CGxl8I).
