@@ -53,6 +53,7 @@ Then you can follow the instructions.
     - [Base Converter](#base-converter)
     - [Shuffle](#shuffle)
     - [Morse Code](#morse-code)
+    - [Hex](#hex)
   * [Adding to the tool](#adding-to-the-tool)
 
 
@@ -502,15 +503,30 @@ Available algorithms in this section:
   
   ![Morse Code](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/International_Morse_Code.svg/260px-International_Morse_Code.svg.png)
 
+- #### Hex
+  Turns bytes into hex and hex to bytes
+
 # Adding to the tool
 If you want to add to the tool, go to the helper.py script and add to the Call class a staticmethod that starts with visit_
 then add the branch name and the method call name. like this:
-```python
+```
 class Call:
     @staticmethod
     def visit_BRANCHNAME_METHODNAME():
-        # do stuff
-        return
+        print() # explanation 
+        encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
+        if encrypt_or_decrypt == 'e':
+            msg = input("Message: ")
+            cipher = func(msg)
+            print(cipher)
+            return cipher
+        if encrypt_or_decrypt == 'd':
+            cipher = input("cipher: ")
+            msg = func(msg)
+            print(msg)
+            return msg
+        else:
+            raise InputException("Input can be E/D")
 ```
 And finally add the method name to the right list in main.py.
 

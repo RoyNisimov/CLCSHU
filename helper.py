@@ -1207,7 +1207,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             f"{Bcolors.WARNING}This is my encryption algorithm, more info here: 'https://github.com/RoyNisimov1/CHA'{Bcolors.ENDC}")
         encrypt_or_decrypt = input(
             "Encrypt, decrypt. E/D: \n").lower()
-        modeOfOperation = input("Mode of operation, ECB/CBC/GCM: ").lower()
+        modeOfOperation = input("Mode of operation, ECB/CBC/CTR: ").lower()
         key = input('Key: ').encode()
         cipher = Piranha(key, Piranha.ECB)
         if encrypt_or_decrypt == 'e':
@@ -1225,8 +1225,8 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 file = input("File: ")
                 with open(file, 'wb') as f: f.write(cipher.iv + c)
                 return c
-            if modeOfOperation == 'gcm':
-                cipher = Piranha(key, Piranha.GCM)
+            if modeOfOperation == 'ctr':
+                cipher = Piranha(key, Piranha.CTR)
                 c = cipher.encrypt(msg)
                 print(cipher.iv + c)
 
@@ -1250,15 +1250,29 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 d = Piranha.unpad(cipher.decrypt(data))
                 print(d)
                 return d
-            if modeOfOperation == 'gcm':
+            if modeOfOperation == 'ctr':
                 with open(file, 'rb') as f:
                     iv = f.read(16)
                     data = f.read()
-                cipher = Piranha(key, Piranha.GCM, iv=iv)
+                cipher = Piranha(key, Piranha.CTR, iv=iv)
                 d = Piranha.unpad(cipher.decrypt(data))
                 print(d)
                 return d
 
         else:
-            raise InputException("Invalid Input! input can be: 'B10', 'TB10' or 'BB'")
+            raise InputException("Invalid Input! input can be: ECB/CBC/CTR")
 
+    @staticmethod
+    def visit_fun_algs_Hex():
+        print(f"Turns bytes into hex and hex to bytes")
+        encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
+        if encrypt_or_decrypt == 'e':
+            msg = input("Message: ").encode().hex()
+            print(msg)
+            return msg
+        if encrypt_or_decrypt == 'd':
+            msg = bytes.fromhex(input("Cipher: "))
+            print(msg)
+            return msg
+        else:
+            raise InputException("Input can be E/D")
