@@ -73,9 +73,9 @@ Read [Hashes](#hashes) for more info.
 but sometimes an IV only needs to be unpredictable or unique.
 * **Modes of operations** - check out [Modes of Operation - Computerphile](https://www.youtube.com/watch?v=Rk0NIQfEXBA)
 * **^** - I will refer to the ^ operator as the [XOR function](#repeated-key-xor)
-* **Pow / \*\*‎** - The power operator
+* **Pow /** ** - The power operator
 * **Mod / %** - The remainder
-
+* **Hex** - Base16
 
 ## Cryptography
 
@@ -98,28 +98,27 @@ Also note that some of the algorithms listed above are implemented using my code
 
 ### Repeated key xor
 
-XOR is a logic gate that is heavily used.
 
 ```
                                 XOR
 ------------------------------------------------------------------------
-XOR is a logic gate that is use heavily in cryptography
+XOR is a logic gate that is used heavily in cryptography
 
-------------------
-  A  |  B  | OUT |
-------------------
-  0  |  1  |  1  |
-  0  |  0  |  0  |
-  1  |  1  |  0  |
-  1  |  0  |  1  |
-------------------
+                        -------------------
+                        |  A  |  B  | OUT |
+                        |-----------------|
+                        |  0  |  1  |  1  |
+                        |  0  |  0  |  0  |
+                        |  1  |  1  |  0  |
+                        |  1  |  0  |  1  |
+                        -------------------
 
-You might have tried to use the '^' operator in python before, confusing this for the power operator. '^' is the XOR operator.
-
+You might have tried to use the '^' operator in python before, confusing this for the power operator.
+'^' is the XOR operator.
 
 Repeated key xor is taking a plaintext and a key.
 Foreach letter of the plaintext you xor the utf-8 charcter of the plaintext and the utf-8 charcter of the key
-To decrypt do the samething with the ciphertext and the key
+To decrypt do the same thing with the ciphertext and the key
 
 Ciphertext = Plaintext ^ Key
 Plaintext = Ciphertext ^ Key
@@ -133,7 +132,7 @@ Xor:
 'Hello world!' with
 'KeyKeyKeyKey'
 Get '030015270a593c0a0b270158' in hex
-
+Or b"\x03\x00\x15'\nY<\n\x0b'\x01X" in bytes
 ```
 [Breaking repeating key XOR](https://dev.to/wrongbyte/cryptography-basics-breaking-repeated-key-xor-ciphertext-1fm2)
 
@@ -165,12 +164,12 @@ A Feistel network is a symmetric encryption structure.
 Plaintext: 'secret'
 Key: 'secret key'
 
-Pads the message to have 64 bits.
+Pads the message to be a multiple of 64 bits.
 Then splits the message in two:
 Left = paddedMessage[:32]
 Right = paddedMessage[32:]
 
-Works for n rounds:
+For n rounds:
 {
     L   |   R   
     |       |
@@ -179,10 +178,12 @@ Works for n rounds:
   Swap L and R
 }
  Swap L and R
-Ciphertext = L | R
+Ciphertext = L + R
 
 In this case the ciphertext is: 
 '7365637265742020202020202020202020202020202020202020202020202020202020202020206b6579736563726574206b6579736563726574206b65797365'
+This isn't beign used for security because as you can clearly see that the message is padded (look at the many repiting 20)
+
 ```
 
 ### RSA
@@ -199,7 +200,7 @@ e = gcd(e, phi_n) = 1, i.e: phi_n / e != integer
 e*d mod phi_n = 1
 You can only share the e and n!
 
-                            Encryption
+                       Encryption and Decryption
 ------------------------------------------------------------------------
 Encryption works like this:
 
@@ -215,10 +216,10 @@ so lets say we want to encrypt '2'
 we do:
 ciphertext = 2**3 % 15 = 8 (the 3 is e)
 message = 8**3 % 15 = 2 (the 3 is d)
-                              Verifying
+                  Creating and Verifing Digital Signatures
 ------------------------------------------------------------------------
 RSA is an important algorithm that can verify authenticity too. because the keys are linked we do can do:
-sign = m**d % n # d is the privet key
+sign = m**d % n # d is the private key
 verify = c**e % n # e is the public key
 
 d should be private, that's the assumption at least
@@ -266,7 +267,7 @@ m = message
 k = 0 < k < p
 s1 = g**k % p
 phi = p - 1
-mod_inv = k ** -1 % phi // pow(k, -1, phi)
+mod_inv = k ** -1 % phi // pow(k, -1, phi) or mod_inv*k % phi == 1
 s2 = (mod_inv * (m - x * s1)) % phi
 
 Send {m, s1, s2}
@@ -310,7 +311,10 @@ W = 6**5 % 23 = 2
 
 The message is authentic
 ```
-The implementation here (not in the math explanation) uses OAEP (commonly used with RSA). All ElGamal implementation in here was written by me, including the OAEP
+The implementation here (not in the math explanation) uses OAEP (commonly used with RSA). 
+All ElGamal implementation in here was written by me, including the OAEP and Key exportation.
+
+**It works, but it's written by me, so it's probably isn't safe. DO NOT USE!**
 
 
 
@@ -321,7 +325,9 @@ The implementation here (not in the math explanation) uses OAEP (commonly used w
 * #### Known Message XOR
    Known message XOR is a way to get the key if you know the ciphertext and the plaintext.
 
-   You might get more than one key, for example if your message was 'test' and the key was 'key', the cipher text will be '1f000a1f' in bytes. But after running through the function the key is going to be 'keyk'
+   You might get more than one key, for example if your message was 'test' and the key was 'key', 
+   the cipher text will be '1f000a1f' in hex. 
+   But after running through the function the key is going to be 'keyk'
 
 
 
@@ -376,6 +382,7 @@ Available algorithms in this section:
   - [Feistel cipher RAB with nonce](#feistel-cipher-rab-with-nonce)
   - [CHAB Feistel](#chab-feistel)
   - [BlackFrog](#blackfrog)
+  - [Piranha](#piranha)
 - Encryption algs:
   - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
   - [ADD](#add)
