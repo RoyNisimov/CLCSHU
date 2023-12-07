@@ -1209,54 +1209,75 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             "Encrypt, decrypt. E/D: \n").lower()
         modeOfOperation = input("Mode of operation, ECB/CBC/CTR: ").lower()
         key = input('Key: ').encode()
-        cipher = Piranha(key, Piranha.ECB)
         if encrypt_or_decrypt == 'e':
             msg = Piranha.pad(input('Message: ').encode(), Piranha.BlockSize)
             if modeOfOperation == 'ecb':
-                c = cipher.encrypt(msg)
+                cipher = Piranha(key, Piranha.ECB, data=msg)
+                c = cipher.encrypt()
                 print(c)
                 file = input("File: ")
-                with open(file, 'wb') as f: f.write(c)
+                with open(file, 'wb') as f: f.write(cipher.HMAC() + c)
                 return c
             if modeOfOperation == 'cbc':
-                cipher = Piranha(key, Piranha.CBC)
+                cipher = Piranha(key, Piranha.CBC, data=msg)
                 c = cipher.encrypt(msg)
                 print(cipher.iv + c)
                 file = input("File: ")
-                with open(file, 'wb') as f: f.write(cipher.iv + c)
+                with open(file, 'wb') as f: f.write(cipher.HMAC() + cipher.iv + c)
                 return c
             if modeOfOperation == 'ctr':
-                cipher = Piranha(key, Piranha.CTR)
+                cipher = Piranha(key, Piranha.CTR, data=msg)
                 c = cipher.encrypt(msg)
                 print(cipher.iv + c)
 
                 file = input("File: ")
-                with open(file, 'wb') as f: f.write(cipher.iv + c)
+                with open(file, 'wb') as f: f.write(cipher.HMAC() + cipher.iv + c)
                 return c
 
         elif encrypt_or_decrypt == 'd':
+            msg = Piranha.pad(input('Original message (For HMAC ): ').encode(), Piranha.BlockSize)
+
             file = input("File: ")
             if modeOfOperation == 'ecb':
+                cipher = Piranha(key, Piranha.ECB, data=msg)
                 with open(file, 'rb') as f:
+                    hmac = f.read(64)
                     data = f.read()
                 d = Piranha.unpad(cipher.decrypt(data))
                 print(d)
+                v = cipher.verify(msg, hmac)
+                if v: print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
+                else: print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
                 return d
             if modeOfOperation == 'cbc':
                 with open(file, 'rb') as f:
+                    hmac = f.read(64)
                     iv = f.read(16)
                     data = f.read()
                 cipher = Piranha(key, Piranha.CBC, iv=iv)
                 d = Piranha.unpad(cipher.decrypt(data))
                 print(d)
+                cipher.update(d)
+                v = cipher.verify(msg, hmac)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
                 return d
             if modeOfOperation == 'ctr':
                 with open(file, 'rb') as f:
+                    hmac = f.read(64)
                     iv = f.read(16)
                     data = f.read()
                 cipher = Piranha(key, Piranha.CTR, iv=iv)
                 d = Piranha.unpad(cipher.decrypt(data))
                 print(d)
+                cipher.update(d)
+                v = cipher.verify(msg, hmac)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
                 return d
 
         else:
