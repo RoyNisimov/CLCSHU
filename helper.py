@@ -15,6 +15,7 @@ from Steganography.PNGs import EOF
 from my_cryptography import ElGamal, OAEP, Skipjack, MorseCode, BaseConverter
 from my_cryptography.Global import Common
 from my_cryptography.Files.EncryptedFile import EncryptedFile
+from my_cryptography.Files import RSAFile
 from CLCSHU.my_cryptography.Exeptions import InputException
 import json
 # pycryptodome:
@@ -1304,21 +1305,79 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
     #   --------------Files start--------------
     @staticmethod
     def visit_files_symmetric():
+        print(
+            f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
+
+        content_or_message = input("Do you want to encrypt the file it self or a message and then safe to a file? C/M").lower()
         algs = {"XOR": "xor", "Piranha (My algorithm, uses CTR)": "piranha"}
-        print(f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
-        encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
+        if content_or_message == "m":
+            encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
+            file_name = input("File name: ")
+            key = input("Key: ").encode()
+            i = Bcolors.print_list(algs)
+            file_name = i + ":///" + file_name
+            if encrypt_or_decrypt == 'e':
+                msg = input("Message: ").encode()
+                EncryptedFile(file_name, key=key).write(msg)
+                return msg
+            if encrypt_or_decrypt == 'd':
+                data = EncryptedFile(file_name, key=key).read()
+                print(data)
+                return data
+            else:
+                raise InputException("Input can be E/D")
+        elif content_or_message == "c":
+            encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
+            file_name = input("File name: ")
+            key = input("Key: ").encode()
+            i = Bcolors.print_list(algs)
+            file_name = i + ":///" + file_name
+            if encrypt_or_decrypt == 'e':
+                with open(file_name, 'rb') as f:
+                    msg = f.read()
+                EncryptedFile(file_name, key=key).write(msg)
+                return msg
+            if encrypt_or_decrypt == 'd':
+                data = EncryptedFile(file_name, key=key).read()
+                print(data)
+                return data
+            else:
+                raise InputException("Input can be E/D")
+        else:
+            raise InputException("Input can be ", "C", "M")
+
+
+    @staticmethod
+    def visit_files_asymmetric():
+        algs = {"RSA": "rsa"}
+        print(
+            f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
+        encrypt_or_decrypt = input("Encrypt, decrypt, sign, verify. (Not everything will be implemented for some algorithms) E/D/S/V: \n").lower()
         file_name = input("File name: ")
-        key = input("Key: ").encode()
+        key_file_name = input("Key file name (will append .pem): ") + '.pem'
         i = Bcolors.print_list(algs)
+        with open(key_file_name, "rb") as f:
+            key = f.read()
         file_name = i + ":///" + file_name
         if encrypt_or_decrypt == 'e':
             msg = input("Message: ").encode()
             EncryptedFile(file_name, key=key).write(msg)
             return msg
-        if encrypt_or_decrypt == 'd':
+        elif encrypt_or_decrypt == 'd':
             data = EncryptedFile(file_name, key=key).read()
             print(data)
             return data
+        elif encrypt_or_decrypt == 's':
+            msg = input("Message: ").encode()
+            EncryptedFile(file_name, key=key).sign(msg)
+            return msg
+        elif encrypt_or_decrypt == 'v':
+            msg = input("Message: ").encode()
+            v = EncryptedFile(file_name, key=key).verify(msg)
+            if v:
+                print(f"{Bcolors.OKGREEN}The message is from the key owner{Bcolors.ENDC}")
+            else:
+                print(f"{Bcolors.FAIL}The message isn't from the key owner{Bcolors.ENDC}")
+            return msg
         else:
-            raise InputException("Input can be E/D")
-
+            raise InputException(None, "E", "D", "S", "V")

@@ -4,7 +4,7 @@ from CHA.Piranha import Piranha
 from ..Exeptions import UnauthorisedChange
 
 class EncryptedFile:  # DO NOT USE ANY OF THESE FOR REAL ENCRYPTION
-    _registry = {}  # 'rot13' -> ROT13Text
+    _registry = {}
 
     def __init_subclass__(cls, prefix, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -27,6 +27,12 @@ class EncryptedFile:  # DO NOT USE ANY OF THESE FOR REAL ENCRYPTION
         raise NotImplementedError
 
     def write(self, data: bytes):
+        raise NotImplementedError
+
+    def sign(self, data: bytes):
+        raise NotImplementedError
+
+    def verify(self, data: bytes) -> bool:
         raise NotImplementedError
 
 
