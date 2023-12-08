@@ -1,5 +1,7 @@
 import sys
 import random
+
+from CLCSHU.my_cryptography.ElGamal import ElGamalKey
 from main import Bcolors
 import CHA
 from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha
@@ -12,7 +14,8 @@ from Steganography.PNGs import LSB
 from Steganography.PNGs import EOF
 from my_cryptography import ElGamal, OAEP, Skipjack, MorseCode, BaseConverter
 from my_cryptography.Global import Common
-from Exeptions import InputException
+from my_cryptography.Files.EncryptedFile import EncryptedFile
+from CLCSHU.my_cryptography.Exeptions import InputException
 import json
 # pycryptodome:
 from Crypto.Random import get_random_bytes
@@ -234,7 +237,7 @@ Again, if this is for real use-cases use something else
                 if len(size) == 0: size = 1024
                 else:
                     size = int(size)
-                pub, priv = ElGamal.ElGamal.generate_keys(size)
+                pub, priv = ElGamal.generate_keys(size)
                 print(f'{pub = }\n{priv = }')
                 passcode = input("passcode: ").encode()
                 key = priv.export_key(passcode)
@@ -246,10 +249,10 @@ Again, if this is for real use-cases use something else
                 return
             elif user_input == "e":
                 with open(pub_key, 'rb') as f:
-                    key = ElGamal.ElGamalKey.import_key(f.read())
+                    key = ElGamalKey.import_key(f.read())
                 print(key)
                 m = input('message:\n').encode('utf-8')
-                c1, c2 = OAEP.OAEP.encrypt_ElGamal(key, m)
+                c1, c2 = OAEP.encrypt_ElGamal(key, m)
                 print(c1)
                 print(c2)
                 file_out = input('file out: ')
@@ -260,21 +263,21 @@ Again, if this is for real use-cases use something else
             elif user_input == "d":
                 passcode = input("Passcode: ").encode()
                 with open(priv_key, 'rb') as f:
-                    key = ElGamal.ElGamalKey.import_key(f.read(), passcode)
+                    key = ElGamalKey.import_key(f.read(), passcode)
                 print(key)
                 file_in = input('file in:\n')
                 with open(file_in, 'r') as f:
                     edata = json.loads(f.read())
-                m = OAEP.OAEP.decrypt_ElGamal(key, edata["c1"], edata["c2"])
+                m = OAEP.decrypt_ElGamal(key, edata["c1"], edata["c2"])
                 print(m.rstrip(b'\x00'))
                 return m
             elif user_input == 's':
                 passcode = input("Passcode: ").encode()
                 with open(priv_key, 'rb') as f:
-                    key = ElGamal.ElGamalKey.import_key(f.read(), passcode)
+                    key = ElGamalKey.import_key(f.read(), passcode)
 
                 msg = input("Message: ").encode()
-                m, s1, s2 = ElGamal.ElGamal.sign(key, msg)
+                m, s1, s2 = ElGamal.sign(key, msg)
                 print(f"{Bcolors.OKGREEN}{m = }\n{s1 = }\n{s2 = }{Bcolors.ENDC}")
                 file_out = input("File out: ")
                 data = {"m": m, "s1": s1, 's2': s2}
@@ -283,11 +286,11 @@ Again, if this is for real use-cases use something else
                 return m, s1, s2
             elif user_input == 'v':
                 with open(pub_key, 'rb') as f:
-                    key = ElGamal.ElGamalKey.import_key(f.read())
+                    key = ElGamalKey.import_key(f.read())
                 file_name = input('File in:\n')
                 with open(file_name, 'r') as f:
                     vdata = json.loads(f.read())
-                ver = ElGamal.ElGamal.verify(key, vdata['m'], vdata['s1'], vdata['s2'])
+                ver = ElGamal.verify(key, vdata['m'], vdata['s1'], vdata['s2'])
                 if ver:
                     print(f"{Bcolors.OKGREEN}Message is verified!{Bcolors.ENDC}")
                 else: print(f"{Bcolors.FAIL}Message is not authentic!{Bcolors.ENDC}")
@@ -877,7 +880,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             h = CHA.CHAFHMAC(key, CHA.CHAObject.RAB)
             h.update(s.encode())
             mac = h.hexdigest()
-            padded = OAEP.OAEP.oaep_pad(s.encode())
+            padded = OAEP.oaep_pad(s.encode())
             obj = CHA.FeistelN().DE(padded, 8, CHA.FeistelN().fRAB_with_nonce(nonce), 'e', 's')
             print(obj)
             print(f"mac:\n{mac}")
@@ -887,7 +890,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             key = input("HMAC key:\n").encode()
             obj = CHA.FeistelN().DE(s, 8, CHA.FeistelN().fRAB_with_nonce(nonce), 'd', 's')
             h = CHA.CHAFHMAC(key, CHA.CHAObject.RAB)
-            obj = OAEP.OAEP.oaep_unpad(obj).rstrip(b"\x00")
+            obj = OAEP.oaep_unpad(obj).rstrip(b"\x00")
             h.update(obj)
             if h.verify(mac):
                 print(f"{Bcolors.OKGREEN}The message '{obj.decode()}' is authentic{Bcolors.ENDC}")
@@ -896,11 +899,11 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             print(obj.decode())
             return obj
         elif both_or_encrypt_or_decrypt == 'b':
-            padded = OAEP.OAEP.oaep_pad(s.encode())
+            padded = OAEP.oaep_pad(s.encode())
             e = CHA.FeistelN().DE(padded, 8, CHA.FeistelN().fRAB_with_nonce(nonce), 'e', 's')
             print(e)
             d = CHA.FeistelN().DE(e, 8, CHA.FeistelN().fRAB_with_nonce(nonce), 'd', 's')
-            d = OAEP.OAEP.oaep_unpad(d).rstrip(b"\x00")
+            d = OAEP.oaep_unpad(d).rstrip(b"\x00")
             print(d.decode())
             return e, d.decode()
 
@@ -986,7 +989,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         elif generate_encrypt_decrypt == 'e':
             with open(pub_file_name, 'rb') as f: pub = BlackFrogKey.load(f.read())
             msg = input("message:\n").encode()
-            c = OAEP.OAEP.encrypt_BlackFrog(pub, msg)
+            c = OAEP.encrypt_BlackFrog(pub, msg)
             print(c)
             save_file = input("save file:\n")
             with open(save_file, 'wb') as f: f.write(c)
@@ -997,7 +1000,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             file_in = input("File input:\n")
             with open(file_in, 'rb') as f:
                 cipher = f.read()
-            msg = OAEP.OAEP.decrypt_BlackFrog(priv, cipher)
+            msg = OAEP.decrypt_BlackFrog(priv, cipher)
             print(msg.rstrip(b'\x00'))
             return
 
@@ -1297,3 +1300,25 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             return msg
         else:
             raise InputException("Input can be E/D")
+
+    #   --------------Files start--------------
+    @staticmethod
+    def visit_files_symmetric():
+        algs = {"XOR": "xor", "Piranha (My algorithm, uses CTR)": "piranha"}
+        print(f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
+        encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
+        file_name = input("File name: ")
+        key = input("Key: ").encode()
+        i = Bcolors.print_list(algs)
+        file_name = i + ":///" + file_name
+        if encrypt_or_decrypt == 'e':
+            msg = input("Message: ").encode()
+            EncryptedFile(file_name, key=key).write(msg)
+            return msg
+        if encrypt_or_decrypt == 'd':
+            data = EncryptedFile(file_name, key=key).read()
+            print(data)
+            return data
+        else:
+            raise InputException("Input can be E/D")
+

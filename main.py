@@ -10,6 +10,15 @@ class Bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    @staticmethod
+    def print_list(list_name):
+        for index, name in enumerate(list_name):
+            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
+        index = int(input("Enter choice number: "))
+        is_dict = isinstance(list_name, dict)
+        if is_dict:
+            return list(list_name.values())[index % len(list_name)]
+        return list_name[index % len(list_name)]
 if __name__ == '__main__':
     banner = f"""{Bcolors.OKCYAN}
 ___________.__              _________                                                .___ .__   .__                   
@@ -40,13 +49,7 @@ _________                            __                                         
 {Bcolors.ENDC}"""
 
     def print_list(list_name):
-        for index, name in enumerate(list_name):
-            print(f"{index}: {Bcolors.OKGREEN}{name}{Bcolors.ENDC}")
-        index = int(input("Enter choice number: "))
-        is_dict = isinstance(list_name, dict)
-        if is_dict:
-            return list(list_name.values())[index % len(list_name)]
-        return list_name[index % len(list_name)]
+        return Bcolors.print_list(list_name)
 
     argspars = argparse.ArgumentParser()
     argspars.add_argument("-b", '--branch', type=str, help="The branch of the tool, can be c,s,h,f")
@@ -71,6 +74,7 @@ _________                            __                                         
                 "BlackFrog (Asymmetric encryption)": "BlackFrog", "Ceaser-Cipher / Rot13": "CeaserCipher", "ADD": "ADD",
                 "Piranha": "Piranha", "Hex": "Hex",
                 "MUL": "MUL", "Base 64": "BASE64", "Binary / Base 2": "Binary", "Base Converter": "BaseConverter", "Shuffle": "Shuffle", "Morse Code": "MorseCode", "ElGamal": "ElGamal"}
+    files_options = {"Symmetric": "symmetric", "Asymmetric": "asymmetric"}
     call = Call()
     if args.branch == 'c':
         branch = 'cryptography'
@@ -102,10 +106,11 @@ _________                            __                                         
         csh: str = input(f"""{Bcolors.HEADER}1) Cryptography
 2) Steganography
 3) Hashing
-4) Fun Algorithms (WARNING: not for real use cases){Bcolors.ENDC}
+4) Fun Algorithms (WARNING: not for real use cases)
+5) Files (WARNING: not for real use cases){Bcolors.ENDC}
 """)
         branch = ''
-        csh = int(csh) % 4
+        csh = int(csh) % 6
         if csh == 1:
             branch = 'cryptography'
             c = print_list(cryptography_modes)
@@ -127,8 +132,13 @@ _________                            __                                         
                 """Hashing is used in many parts of cryptography. It's a way of storing a fingerprint of the data but not the actual data.""")
             c = print_list(hashing)
             call.visit(branch, c)
-        elif csh == 0:
+        elif csh == 4:
             print("WARNING: not for real use cases, this was made for fun!")
             branch = 'fun_algs'
             c = print_list(fun_algs)
+            call.visit(branch, c)
+        elif csh == 5:
+            print("WARNING: not for real use cases, this was made for fun!")
+            branch = 'files'
+            c = print_list(files_options)
             call.visit(branch, c)

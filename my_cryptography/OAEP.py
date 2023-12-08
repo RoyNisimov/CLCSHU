@@ -1,7 +1,7 @@
 import hashlib
 import secrets
 import sys
-from my_cryptography import ElGamal
+from .ElGamal import ElGamal, ElGamalKey
 from CHA import BlackFrog, BlackFrogKey
 
 
@@ -49,16 +49,16 @@ class OAEP:
         return OAEP.oaep_unpad(oaep_step1)
 
     @staticmethod
-    def encrypt_ElGamal(key: ElGamal.ElGamalKey, msg):
+    def encrypt_ElGamal(key: ElGamalKey, msg):
         oaep = OAEP.oaep_pad(msg)
         oaep_int = int.from_bytes(oaep, sys.byteorder)
         if oaep_int >= key.p: OAEP.encrypt_ElGamal(key, msg)
-        c1, c2 = ElGamal.ElGamal.encrypt(key, oaep)
+        c1, c2 = ElGamal.encrypt(key, oaep)
         return c1, c2
 
     @staticmethod
     def decrypt_ElGamal(key, c1, c2):
-        oaep = ElGamal.ElGamal.decrypt(key, c1, c2)
+        oaep = ElGamal.decrypt(key, c1, c2)
         return OAEP.oaep_unpad(oaep)
 
     @staticmethod
@@ -75,7 +75,7 @@ class OAEP:
         return OAEP.oaep_unpad(oaep)
 
 if __name__ == '__main__':
-    pub, priv = ElGamal.ElGamal.generate_keys(1024)
+    pub, priv = ElGamal.generate_keys(1024)
     print(pub)
     print(priv)
 
