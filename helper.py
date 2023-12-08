@@ -1220,14 +1220,14 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 c = cipher.encrypt()
                 print(c)
                 file = input("File: ")
-                with open(file, 'wb') as f: f.write(cipher.HMAC() + c)
+                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + c)
                 return c
             if modeOfOperation == 'cbc':
                 cipher = Piranha(key, Piranha.CBC, data=msg)
                 c = cipher.encrypt(msg)
                 print(cipher.iv + c)
                 file = input("File: ")
-                with open(file, 'wb') as f: f.write(cipher.HMAC() + cipher.iv + c)
+                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + cipher.iv + c)
                 return c
             if modeOfOperation == 'ctr':
                 cipher = Piranha(key, Piranha.CTR, data=msg)
@@ -1235,21 +1235,20 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 print(cipher.iv + c)
 
                 file = input("File: ")
-                with open(file, 'wb') as f: f.write(cipher.HMAC() + cipher.iv + c)
+                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + cipher.iv + c)
                 return c
 
         elif encrypt_or_decrypt == 'd':
-            msg = Piranha.pad(input('Original message (For HMAC ): ').encode(), Piranha.BlockSize)
-
             file = input("File: ")
             if modeOfOperation == 'ecb':
-                cipher = Piranha(key, Piranha.ECB, data=msg)
+
                 with open(file, 'rb') as f:
                     hmac = f.read(64)
                     data = f.read()
-                d = Piranha.unpad(cipher.decrypt(data))
-                print(d)
-                v = cipher.verify(msg, hmac)
+                cipher = Piranha(key, Piranha.CTR)
+                d = cipher.decrypt(data)
+                print(Piranha.unpad(d))
+                v = cipher.verify(data=d, mac=hmac)
                 if v: print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
                 else: print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
                 return d
@@ -1259,10 +1258,9 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                     iv = f.read(16)
                     data = f.read()
                 cipher = Piranha(key, Piranha.CBC, iv=iv)
-                d = Piranha.unpad(cipher.decrypt(data))
-                print(d)
-                cipher.update(d)
-                v = cipher.verify(msg, hmac)
+                d = cipher.decrypt(data)
+                print(Piranha.unpad(d))
+                v = cipher.verify(data=d, mac=hmac)
                 if v:
                     print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
                 else:
@@ -1274,10 +1272,9 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                     iv = f.read(16)
                     data = f.read()
                 cipher = Piranha(key, Piranha.CTR, iv=iv)
-                d = Piranha.unpad(cipher.decrypt(data))
-                print(d)
-                cipher.update(d)
-                v = cipher.verify(msg, hmac)
+                d = cipher.decrypt(data)
+                print(Piranha.unpad(d))
+                v = cipher.verify(data=d, mac=hmac)
                 if v:
                     print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
                 else:
@@ -1349,35 +1346,63 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
 
     @staticmethod
     def visit_files_asymmetric():
-        algs = {"RSA": "rsa"}
+        algs = {"RSA": "rsa", "BlackFrog": "black_frog"}
         print(
             f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
+        content_or_message = input(
+            "Do you want to encrypt the file it self or a message and then safe to a file? C/M").lower()
+        i = Bcolors.print_list(algs)
         encrypt_or_decrypt = input("Encrypt, decrypt, sign, verify. (Not everything will be implemented for some algorithms) E/D/S/V: \n").lower()
         file_name = input("File name: ")
         key_file_name = input("Key file name (will append .pem): ") + '.pem'
-        i = Bcolors.print_list(algs)
         with open(key_file_name, "rb") as f:
             key = f.read()
         file_name = i + ":///" + file_name
-        if encrypt_or_decrypt == 'e':
-            msg = input("Message: ").encode()
-            EncryptedFile(file_name, key=key).write(msg)
-            return msg
-        elif encrypt_or_decrypt == 'd':
-            data = EncryptedFile(file_name, key=key).read()
-            print(data)
-            return data
-        elif encrypt_or_decrypt == 's':
-            msg = input("Message: ").encode()
-            EncryptedFile(file_name, key=key).sign(msg)
-            return msg
-        elif encrypt_or_decrypt == 'v':
-            msg = input("Message: ").encode()
-            v = EncryptedFile(file_name, key=key).verify(msg)
-            if v:
-                print(f"{Bcolors.OKGREEN}The message is from the key owner{Bcolors.ENDC}")
+        if content_or_message == 'm':
+            if encrypt_or_decrypt == 'e':
+                msg = input("Message: ").encode()
+                EncryptedFile(file_name, key=key).write(msg)
+                return msg
+            elif encrypt_or_decrypt == 'd':
+                data = EncryptedFile(file_name, key=key).read()
+                print(data)
+                return data
+            elif encrypt_or_decrypt == 's':
+                msg = input("Message: ").encode()
+                EncryptedFile(file_name, key=key).sign(msg)
+                return msg
+            elif encrypt_or_decrypt == 'v':
+                msg = input("Message: ").encode()
+                v = EncryptedFile(file_name, key=key).verify(msg)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is from the key owner{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't from the key owner{Bcolors.ENDC}")
+                return msg
             else:
-                print(f"{Bcolors.FAIL}The message isn't from the key owner{Bcolors.ENDC}")
-            return msg
+                raise InputException(None, "E", "D", "S", "V")
+        elif content_or_message == 'c':
+            if encrypt_or_decrypt == 'e':
+                with open(file_name, "rb") as f: msg = f.read()
+                EncryptedFile(file_name, key=key).write(msg)
+                return msg
+            elif encrypt_or_decrypt == 'd':
+                data = EncryptedFile(file_name, key=key).read()
+                print(data)
+                return data
+            elif encrypt_or_decrypt == 's':
+                with open(file_name, "rb") as f: msg = f.read()
+                EncryptedFile(file_name, key=key).sign(msg)
+                return msg
+            elif encrypt_or_decrypt == 'v':
+                with open(file_name, "rb") as f: msg = f.read()
+                v = EncryptedFile(file_name, key=key).verify(msg)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is from the key owner{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't from the key owner{Bcolors.ENDC}")
+                return msg
+            else:
+                raise InputException(None, "E", "D", "S", "V")
         else:
-            raise InputException(None, "E", "D", "S", "V")
+            raise InputException(None, "C", "M")

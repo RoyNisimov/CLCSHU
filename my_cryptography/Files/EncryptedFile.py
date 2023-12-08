@@ -2,6 +2,7 @@ from ..Global import Common
 # https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py
 from CHA.Piranha import Piranha
 from ..Exeptions import UnauthorisedChange
+from CHA import BlackFrog, BlackFrogKey, OAEP
 
 class EncryptedFile:  # DO NOT USE ANY OF THESE FOR REAL ENCRYPTION
     _registry = {}
@@ -91,3 +92,23 @@ class PiranhaFile(EncryptedFile, prefix='piranha'):
         hmac = cipher.HMAC()
         with open(self.file, 'wb') as f:
             f.write(hmac + cipher.iv + encrypted)
+class BlackFrogFile(EncryptedFile, prefix='black_frog'):
+    def __init__(self, path, key):
+        if isinstance(self.key, str):
+            self.key = self.key.encode()
+        if b"----BEGIN BLACKFROG PRIVATE KEY----" in self.key:
+            key1 = input("Passphrase: ").encode()
+            self.black_frog_key = BlackFrogKey.load(self.key, key1)
+        else:
+            self.black_frog_key = BlackFrogKey.load(self.key)
+
+
+    def read(self):
+        with open(self.file, 'rb') as f: data = f.read()
+        dec = OAEP.decrypt_BlackFrog(self.black_frog_key, data).rstrip(b"\x00")
+        return dec
+
+    def write(self, data: bytes):
+        enc = OAEP.encrypt_BlackFrog(self.black_frog_key, data)
+        with open(self.file, 'wb') as f: f.write(enc)
+
