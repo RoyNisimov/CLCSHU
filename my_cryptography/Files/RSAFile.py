@@ -18,16 +18,18 @@ class RSAFile(EncryptedFile, prefix='rsa'):
         dec = cipher_rsa.decrypt(data)
         return dec
 
-    def write(self, data: bytes):
+    def write(self, data: bytes, file_out=None):
+        if file_out is None: file_out = self.file
         cipher_rsa = PKCS1_OAEP.new(self.rsa_key)
         enc = cipher_rsa.encrypt(data)
-        with open(self.file, 'wb') as f: f.write(enc)
+        with open(file_out, 'wb') as f: f.write(enc)
 
-    def sign(self, data: bytes):
+    def sign(self, data: bytes, file_out=None):
+        if file_out is None: file_out = self.file
         message = data
         h = SHA256.new(message)
         signature = pkcs1_15.new(self.rsa_key).sign(h)
-        with open(self.file, 'wb') as f: f.write(signature)
+        with open(file_out, 'wb') as f: f.write(signature)
 
     def verify(self, data: bytes):
         h = SHA256.new(data)

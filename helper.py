@@ -1,6 +1,5 @@
 import sys
 import random
-
 from CLCSHU.my_cryptography.ElGamal import ElGamalKey
 from main import Bcolors
 import CHA
@@ -15,7 +14,7 @@ from Steganography.PNGs import EOF
 from my_cryptography import ElGamal, OAEP, Skipjack, MorseCode, BaseConverter
 from my_cryptography.Global import Common
 from my_cryptography.Files.EncryptedFile import EncryptedFile
-from my_cryptography.Files import RSAFile
+from my_cryptography.Files import RSAFile, ElGamalFile
 from CLCSHU.my_cryptography.Exeptions import InputException
 import json
 # pycryptodome:
@@ -1304,14 +1303,13 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
     def visit_files_symmetric():
         print(
             f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
-
-        content_or_message = input("Do you want to encrypt the file it self or a message and then safe to a file? C/M").lower()
-        algs = {"XOR": "xor", "Piranha (My algorithm, uses CTR)": "piranha"}
+        content_or_message = input("Do you want to encrypt the file it self or a message and then safe to a file? C/M: ").lower()
+        algs = {"XOR": "xor", "AES 128 (16 byte key)": "aes128", "Piranha (My algorithm, uses CTR)": "piranha"}
+        i = Bcolors.print_list(algs)
+        encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
         if content_or_message == "m":
-            encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
             file_name = input("File name: ")
             key = input("Key: ").encode()
-            i = Bcolors.print_list(algs)
             file_name = i + ":///" + file_name
             if encrypt_or_decrypt == 'e':
                 msg = input("Message: ").encode()
@@ -1324,13 +1322,13 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             else:
                 raise InputException("Input can be E/D")
         elif content_or_message == "c":
-            encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
-            file_name = input("File name: ")
+            og_file_name = input("File name: ")
+            file_out = input("file out: ")
+            if len(file_out) == 0: file_out = og_file_name
             key = input("Key: ").encode()
-            i = Bcolors.print_list(algs)
-            file_name = i + ":///" + file_name
+            file_name = i + ":///" + file_out
             if encrypt_or_decrypt == 'e':
-                with open(file_name, 'rb') as f:
+                with open(og_file_name, 'rb') as f:
                     msg = f.read()
                 EncryptedFile(file_name, key=key).write(msg)
                 return msg
@@ -1346,18 +1344,18 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
 
     @staticmethod
     def visit_files_asymmetric():
-        algs = {"RSA": "rsa", "BlackFrog": "black_frog"}
+        algs = {"RSA": "rsa", "ElGamal": "elgamal", "BlackFrog": "black_frog"}
         print(
             f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
         content_or_message = input(
-            "Do you want to encrypt the file it self or a message and then safe to a file? C/M").lower()
+            "Do you want to encrypt the file it self or a message and then safe to a file? C/M: ").lower()
         i = Bcolors.print_list(algs)
         encrypt_or_decrypt = input("Encrypt, decrypt, sign, verify. (Not everything will be implemented for some algorithms) E/D/S/V: \n").lower()
-        file_name = input("File name: ")
+        og_file_name = input("File name: ")
         key_file_name = input("Key file name (will append .pem): ") + '.pem'
         with open(key_file_name, "rb") as f:
             key = f.read()
-        file_name = i + ":///" + file_name
+        file_name = i + ":///" + og_file_name
         if content_or_message == 'm':
             if encrypt_or_decrypt == 'e':
                 msg = input("Message: ").encode()
@@ -1383,7 +1381,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 raise InputException(None, "E", "D", "S", "V")
         elif content_or_message == 'c':
             if encrypt_or_decrypt == 'e':
-                with open(file_name, "rb") as f: msg = f.read()
+                with open(og_file_name, "rb") as f: msg = f.read()
                 EncryptedFile(file_name, key=key).write(msg)
                 return msg
             elif encrypt_or_decrypt == 'd':
@@ -1391,7 +1389,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 print(data)
                 return data
             elif encrypt_or_decrypt == 's':
-                with open(file_name, "rb") as f: msg = f.read()
+                with open(og_file_name, "rb") as f: msg = f.read()
                 EncryptedFile(file_name, key=key).sign(msg)
                 return msg
             elif encrypt_or_decrypt == 'v':

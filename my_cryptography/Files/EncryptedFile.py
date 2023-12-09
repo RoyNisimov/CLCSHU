@@ -3,6 +3,10 @@ from ..Global import Common
 from CHA.Piranha import Piranha
 from ..Exeptions import UnauthorisedChange
 from CHA import BlackFrog, BlackFrogKey, OAEP
+from Crypto.Cipher import AES, ChaCha20, DES, Blowfish
+from Crypto.Util.Padding import pad, unpad
+
+
 
 class EncryptedFile:  # DO NOT USE ANY OF THESE FOR REAL ENCRYPTION
     _registry = {}
@@ -27,10 +31,10 @@ class EncryptedFile:  # DO NOT USE ANY OF THESE FOR REAL ENCRYPTION
     def read(self) -> bytes:
         raise NotImplementedError
 
-    def write(self, data: bytes):
+    def write(self, data: bytes, file_out=None):
         raise NotImplementedError
 
-    def sign(self, data: bytes):
+    def sign(self, data: bytes, file_out=None):
         raise NotImplementedError
 
     def verify(self, data: bytes) -> bool:
@@ -42,7 +46,7 @@ class Plaintext(EncryptedFile, prefix='file'):
         with open(self.file, 'rb') as f:
             return f.read()
 
-    def write(self, data: bytes):
+    def write(self, data: bytes, file_out=None):
         with open(self.file, 'wb') as f:
             f.write(data)
 
@@ -64,9 +68,10 @@ class XOR(EncryptedFile, prefix='xor'):
         text = self.xor_bytes_with_key(btext)
         return text
 
-    def write(self, data: bytes):
+    def write(self, data: bytes, file_out=None):
+        if file_out is None: file_out = self.file
         cipher = self.xor_bytes_with_key(data)
-        with open(self.file, 'wb') as f:
+        with open(file_out, 'wb') as f:
             f.write(cipher)
 
 class PiranhaFile(EncryptedFile, prefix='piranha'):
@@ -86,11 +91,12 @@ class PiranhaFile(EncryptedFile, prefix='piranha'):
         if not v: raise UnauthorisedChange(f"Message '{d}' doesn't fit the given HMAC!")
         return d
 
-    def write(self, data: bytes):
+    def write(self, data: bytes, file_out=None):
+        if file_out is None: file_out = self.file
         cipher = Piranha(self.key, Piranha.CTR)
         encrypted = cipher.encrypt(data=data)
         hmac = cipher.HMAC()
-        with open(self.file, 'wb') as f:
+        with open(file_out, 'wb') as f:
             f.write(hmac + cipher.iv + encrypted)
 class BlackFrogFile(EncryptedFile, prefix='black_frog'):
     def __init__(self, path, key):
@@ -108,7 +114,38 @@ class BlackFrogFile(EncryptedFile, prefix='black_frog'):
         dec = OAEP.decrypt_BlackFrog(self.black_frog_key, data).rstrip(b"\x00")
         return dec
 
-    def write(self, data: bytes):
+    def write(self, data: bytes, file_out=None):
+        if file_out is None: file_out = self.file
         enc = OAEP.encrypt_BlackFrog(self.black_frog_key, data)
-        with open(self.file, 'wb') as f: f.write(enc)
+        with open(file_out, 'wb') as f: f.write(enc)
+
+class AES128File(EncryptedFile, prefix='aes128'):
+    def __init__(self, path, key):
+        if isinstance(self.key, str):
+            self.key = self.key.encode()
+
+
+
+    def read(self):
+        with open(self.file, 'rb') as f:
+            tag = f.read(16)
+            nonce = f.read(16)
+            ciphertext = f.read()
+        cipher = AES.new(self.key, AES.MODE_EAX, nonce=nonce)
+        plaintext = cipher.decrypt(ciphertext)
+        try:
+            cipher.verify(tag)
+        except ValueError:
+            raise UnauthorisedChange("Key incorrect or message corrupted")
+        return plaintext
+
+
+    def write(self, data: bytes, file_out=None):
+        if file_out is None: file_out = self.file
+        cipher = AES.new(self.key, AES.MODE_EAX)
+        nonce = cipher.nonce
+        ciphertext, tag = cipher.encrypt_and_digest(data)
+        d = tag + nonce + ciphertext
+        with open(file_out, 'wb') as f:
+            f.write(d)
 
