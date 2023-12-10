@@ -15,7 +15,7 @@ from my_cryptography import ElGamal, OAEP, Skipjack, MorseCode, BaseConverter
 from my_cryptography.Global import Common
 from my_cryptography.Files.EncryptedFile import EncryptedFile
 from my_cryptography.Files import RSAFile, ElGamalFile
-from CLCSHU.my_cryptography.Exeptions import InputException
+from my_cryptography.Exeptions import InputException
 import json
 # pycryptodome:
 from Crypto.Random import get_random_bytes
