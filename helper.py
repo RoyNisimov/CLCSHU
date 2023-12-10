@@ -3,7 +3,7 @@ import random
 from my_cryptography.ElGamal import ElGamalKey
 from main import Bcolors
 import CHA
-from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha, KRY
+from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha, KRY, Krhash
 import string
 import hashlib
 import ast
@@ -1404,6 +1404,18 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             return msg
         else:
             raise InputException("Input can be E/D")
+
+    @staticmethod
+    def visit_fun_algs_Krhash():
+        b = input("Message\n").encode()
+        hash1 = Krhash.Krhash(b)
+        type1 = input("hexdigest or digest? H/D\n").lower()
+        if type1 == 'h':
+            print(hash1.hex())
+            return hash1.hex()
+        elif type1 == 'd':
+            print(hash1)
+            return hash1
 
     #   --------------Files start--------------
     @staticmethod
