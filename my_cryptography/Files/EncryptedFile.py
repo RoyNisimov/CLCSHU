@@ -1,6 +1,7 @@
 from ..Global import Common
 # https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py
 from CHA.Piranha import Piranha
+from CHA.KRY import KRY
 from ..Exeptions import UnauthorisedChange
 from CHA import BlackFrog, BlackFrogKey, OAEP
 from Crypto.Cipher import AES, ChaCha20, DES, Blowfish
@@ -82,22 +83,40 @@ class PiranhaFile(EncryptedFile, prefix='piranha'):
 
     def read(self):
         with open(self.file, 'rb') as f:
-            hmac = f.read(64)
-            iv = f.read(16)
             data = f.read()
-        cipher = Piranha(self.key, Piranha.CTR, iv=iv)
+        cipher = Piranha(self.key, Piranha.EAA)
         d = Piranha.unpad(cipher.decrypt(data))
-        v = cipher.verify(data=None, mac=hmac)
-        if not v: raise UnauthorisedChange(f"Message '{d}' doesn't fit the given HMAC!")
         return d
 
     def write(self, data: bytes, file_out=None):
         if file_out is None: file_out = self.file
-        cipher = Piranha(self.key, Piranha.CTR)
+        cipher = Piranha(self.key, Piranha.EAA)
         encrypted = cipher.encrypt(data=data)
-        hmac = cipher.HMAC()
         with open(file_out, 'wb') as f:
-            f.write(hmac + cipher.iv + encrypted)
+            f.write(encrypted)
+
+class KRYFile(EncryptedFile, prefix='kry'):
+    def __init__(self, path, key):
+        if isinstance(self.key, str):
+            self.key = self.key.encode()
+
+
+    def read(self):
+        with open(self.file, 'rb') as f:
+            data = f.read()
+        cipher = KRY(self.key, KRY.EAA)
+        d = Piranha.unpad(cipher.decrypt(data))
+        return d
+
+    def write(self, data: bytes, file_out=None):
+        if file_out is None: file_out = self.file
+        cipher = KRY(self.key, KRY.EAA)
+        data = KRY.pad(data)
+        encrypted = cipher.encrypt(data=data)
+        with open(file_out, 'wb') as f:
+            f.write(encrypted)
+
+
 class BlackFrogFile(EncryptedFile, prefix='black_frog'):
     def __init__(self, path, key):
         if isinstance(self.key, str):
