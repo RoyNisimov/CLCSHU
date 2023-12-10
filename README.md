@@ -44,6 +44,7 @@ Then you can follow the instructions.
     - [Feistel cipher RAB with nonce](#feistel-cipher-rab-with-nonce)
     - [CHAB Feistel](#chab-feistel)
     - [Piranha](#piranha)
+    - [KRY](#kry)
     - [BlackFrog](#blackfrog)
     - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
     - [ADD](#add)
@@ -383,6 +384,7 @@ Available algorithms in this section:
   - [CHAB Feistel](#chab-feistel)
   - [BlackFrog](#blackfrog)
   - [Piranha](#piranha)
+  - [KRY](#kry)
 - Encryption algs:
   - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
   - [ADD](#add)
@@ -402,6 +404,7 @@ Available algorithms in this section:
 - [CHAB Feistel](#chab-feistel)
 - [BlackFrog](#blackfrog)
 - [Piranha](#piranha)
+- [KRY](#kry)
 
 * #### CHA
   CHA stands for Customizable Hashing Algorithm.
@@ -474,9 +477,24 @@ Available algorithms in this section:
   
   * ECB
   * CBC
-  * GCM
+  * CTR
+  * EAA
 
   For more info click [here](https://github.com/RoyNisimov1/CHA#piranha)
+
+* #### KRY
+  I made this cipher using the KRHASH-Feistel network.
+  
+  I made this to learn about [modes of operation](https://www.youtube.com/watch?v=Rk0NIQfEXBA).
+  
+  Right now the available modes are:
+  
+  * ECB
+  * CBC
+  * CTR
+  * EAA
+
+  For more info click [here](https://github.com/RoyNisimov1/CHA#kry-and-krhash)
 
 ### Encryption algs
 - #### Ceaser Cipher / Rot13

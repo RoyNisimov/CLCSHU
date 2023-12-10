@@ -3,7 +3,7 @@ import random
 from CLCSHU.my_cryptography.ElGamal import ElGamalKey
 from main import Bcolors
 import CHA
-from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha
+from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha, KRY
 import string
 import hashlib
 import ast
@@ -1210,7 +1210,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             f"{Bcolors.WARNING}This is my encryption algorithm, more info here: 'https://github.com/RoyNisimov1/CHA'{Bcolors.ENDC}")
         encrypt_or_decrypt = input(
             "Encrypt, decrypt. E/D: \n").lower()
-        modeOfOperation = input("Mode of operation, ECB/CBC/CTR: ").lower()
+        modeOfOperation = input("Mode of operation, ECB/CBC/CTR/EAA: ").lower()
         key = input('Key: ').encode()
         if encrypt_or_decrypt == 'e':
             msg = Piranha.pad(input('Message: ').encode(), Piranha.BlockSize)
@@ -1236,15 +1236,21 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 file = input("File: ")
                 with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + cipher.iv + c)
                 return c
-
+            if modeOfOperation == 'eaa':
+                cipher = Piranha(key, Piranha.EAA, data=msg)
+                c = cipher.encrypt(msg)
+                print(c)
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(c)
+                return c
+            raise InputException(None, "ECB", "CBC", "CTR", "EAA")
         elif encrypt_or_decrypt == 'd':
             file = input("File: ")
             if modeOfOperation == 'ecb':
-
                 with open(file, 'rb') as f:
                     hmac = f.read(64)
                     data = f.read()
-                cipher = Piranha(key, Piranha.CTR)
+                cipher = Piranha(key, Piranha.ECB)
                 d = cipher.decrypt(data)
                 print(Piranha.unpad(d))
                 v = cipher.verify(data=d, mac=hmac)
@@ -1279,9 +1285,110 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 else:
                     print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
                 return d
-
+            if modeOfOperation == 'eaa':
+                with open(file, 'rb') as f:
+                    data = f.read()
+                cipher = Piranha(key, Piranha.EAA)
+                d = cipher.decrypt(data)
+                print(Piranha.unpad(d))
+                return d
+            raise InputException(None, "ECB", "CBC", "CTR", "EAA")
         else:
-            raise InputException("Invalid Input! input can be: ECB/CBC/CTR")
+            raise InputException(None, "E", "D")
+
+    @staticmethod
+    def visit_fun_algs_KRY():
+        print(
+            f"{Bcolors.WARNING}This is my encryption algorithm, more info here: 'https://github.com/RoyNisimov1/CHA'{Bcolors.ENDC}")
+        encrypt_or_decrypt = input(
+            "Encrypt, decrypt. E/D: \n").lower()
+        modeOfOperation = input("Mode of operation, ECB/CBC/CTR/EAA: ").lower()
+        key = input('Key: ').encode()
+        if encrypt_or_decrypt == 'e':
+            msg = KRY.pad(input('Message: ').encode(), KRY.BlockSize)
+            if modeOfOperation == 'ecb':
+                cipher = KRY(key, KRY.ECB, data=msg)
+                c = cipher.encrypt()
+                print(c)
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + c)
+                return c
+            if modeOfOperation == 'cbc':
+                cipher = KRY(key, KRY.CBC, data=msg)
+                c = cipher.encrypt(msg)
+                print(cipher.iv + c)
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + cipher.iv + c)
+                return c
+            if modeOfOperation == 'ctr':
+                cipher = KRY(key, Piranha.CTR, data=msg)
+                c = cipher.encrypt(msg)
+                print(cipher.iv + c)
+
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + cipher.iv + c)
+                return c
+            if modeOfOperation == 'eaa':
+                cipher = KRY(key, KRY.EAA, data=msg)
+                c = cipher.encrypt(msg)
+                print(c)
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(c)
+                return c
+            raise InputException(None, "ECB", "CBC", "CTR", "EAA")
+        elif encrypt_or_decrypt == 'd':
+            file = input("File: ")
+            if modeOfOperation == 'ecb':
+                with open(file, 'rb') as f:
+                    hmac = f.read(64)
+                    data = f.read()
+                cipher = KRY(key, KRY.ECB)
+                d = cipher.decrypt(data)
+                print(KRY.unpad(d))
+                v = cipher.verify(data=d, mac=hmac)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
+                return d
+            if modeOfOperation == 'cbc':
+                with open(file, 'rb') as f:
+                    hmac = f.read(64)
+                    iv = f.read(16)
+                    data = f.read()
+                cipher = KRY(key, KRY.CBC, iv=iv)
+                d = cipher.decrypt(data)
+                print(KRY.unpad(d))
+                v = cipher.verify(data=d, mac=hmac)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
+                return d
+            if modeOfOperation == 'ctr':
+                with open(file, 'rb') as f:
+                    hmac = f.read(64)
+                    iv = f.read(16)
+                    data = f.read()
+                cipher = KRY(key, KRY.CTR, iv=iv)
+                d = cipher.decrypt(data)
+                print(KRY.unpad(d))
+                v = cipher.verify(data=d, mac=hmac)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
+                return d
+            if modeOfOperation == 'eaa':
+                with open(file, 'rb') as f:
+                    data = f.read()
+                cipher = KRY(key, KRY.EAA)
+                d = cipher.decrypt(data)
+                print(KRY.unpad(d))
+                return d
+            raise InputException(None, "ECB", "CBC", "CTR", "EAA")
+        else:
+            raise InputException(None, "E", "D")
 
     @staticmethod
     def visit_fun_algs_Hex():
