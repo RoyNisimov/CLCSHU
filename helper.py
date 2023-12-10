@@ -1,6 +1,6 @@
 import sys
 import random
-from CLCSHU.my_cryptography.ElGamal import ElGamalKey
+from my_cryptography.ElGamal import ElGamalKey
 from main import Bcolors
 import CHA
 from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha, KRY
