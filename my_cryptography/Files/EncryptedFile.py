@@ -6,7 +6,8 @@ from ..Exeptions import UnauthorisedChange
 from CHA import BlackFrog, BlackFrogKey, OAEP
 from Crypto.Cipher import AES, ChaCha20, DES, Blowfish
 from Crypto.Util.Padding import pad, unpad
-
+import json
+from base64 import b64encode, b64decode
 
 
 class EncryptedFile:  # DO NOT USE ANY OF THESE FOR REAL ENCRYPTION
@@ -156,15 +157,49 @@ class AES128File(EncryptedFile, prefix='aes128'):
             cipher.verify(tag)
         except ValueError:
             raise UnauthorisedChange("Key incorrect or message corrupted")
-        return plaintext
+        return unpad(plaintext, AES.block_size)
 
 
     def write(self, data: bytes, file_out=None):
         if file_out is None: file_out = self.file
+        data = pad(data, AES.block_size)
         cipher = AES.new(self.key, AES.MODE_EAX)
         nonce = cipher.nonce
         ciphertext, tag = cipher.encrypt_and_digest(data)
         d = tag + nonce + ciphertext
         with open(file_out, 'wb') as f:
             f.write(d)
+
+class ChaCha20File(EncryptedFile, prefix='chacha20'):
+    def __init__(self, path, key):
+        if isinstance(self.key, str):
+            self.key = self.key.encode()
+        assert len(self.key) == 32
+
+
+
+    def read(self):
+        with open(self.file, 'r') as f:
+            json_input = f.read()
+        try:
+            b64 = json.loads(json_input)
+            nonce = b64decode(b64['nonce'])
+            ciphertext = b64decode(b64['ciphertext'])
+            cipher = ChaCha20.new(key=self.key, nonce=nonce)
+            plaintext = cipher.decrypt(ciphertext)
+            return plaintext
+        except (ValueError, KeyError):
+            print("Incorrect decryption")
+
+
+    def write(self, data: bytes, file_out=None):
+        if file_out is None: file_out = self.file
+        cipher = ChaCha20.new(key=self.key)
+        ciphertext = cipher.encrypt(data)
+        nonce = b64encode(cipher.nonce).decode('utf-8')
+        ct = b64encode(ciphertext).decode('utf-8')
+        result = json.dumps({'nonce': nonce, 'ciphertext': ct})
+        with open(file_out, 'w') as f:
+            f.write(result)
+
 

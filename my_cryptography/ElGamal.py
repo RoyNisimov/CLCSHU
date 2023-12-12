@@ -1,8 +1,8 @@
 import secrets
 import sys
 import math
-from my_cryptography.Global import PrimeNumberGenerator
-from my_cryptography.BaseConverter import BaseConverter
+from .Global import PrimeNumberGenerator
+from .BaseConverter import BaseConverter
 from CHA import PEM
 
 import json

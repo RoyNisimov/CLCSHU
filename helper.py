@@ -1423,7 +1423,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         print(
             f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
         content_or_message = input("Do you want to encrypt the file it self or a message and then safe to a file? C/M: ").lower()
-        algs = {"XOR": "xor", "AES 128 (16 byte key)": "aes128", "Piranha (My algorithm, uses CTR)": "piranha", "KRY": "kry"}
+        algs = {"XOR": "xor", "AES 128 (16 byte key)": "aes128", "ChaCha20": "chacha20", "Piranha (My algorithm, uses EAA)": "piranha", "KRY (My algorithm, uses EAA)": "kry"}
         i = Bcolors.print_list(algs)
         encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
         if content_or_message == "m":
