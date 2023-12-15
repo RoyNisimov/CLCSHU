@@ -45,6 +45,7 @@ Then you can follow the instructions.
     - [CHAB Feistel](#chab-feistel)
     - [Piranha](#piranha)
     - [KRY](#kry)
+    - [CowCow](#cowcow)
     - [BlackFrog](#blackfrog)
     - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
     - [ADD](#add)
@@ -385,6 +386,7 @@ Available algorithms in this section:
   - [BlackFrog](#blackfrog)
   - [Piranha](#piranha)
   - [KRY](#kry)
+  - [CowCow](#cowcow)
 - Encryption algs:
   - [Ceaser-Cipher / Rot13](#ceaser-cipher--rot13)
   - [ADD](#add)
@@ -405,6 +407,7 @@ Available algorithms in this section:
 - [BlackFrog](#blackfrog)
 - [Piranha](#piranha)
 - [KRY](#kry)
+- [CowCow](#cowcow)
 
 * #### CHA
   CHA stands for Customizable Hashing Algorithm.
@@ -495,6 +498,19 @@ Available algorithms in this section:
   * EAA
 
   For more info click [here](https://github.com/RoyNisimov1/CHA#kry-and-krhash)
+
+* #### CowCow
+  I made this cipher using the CowCow-SP network.
+  
+  I made this to learn about [modes of operation](https://www.youtube.com/watch?v=Rk0NIQfEXBA).
+  
+  Right now the available modes are:
+  
+  * ECB
+  * CTR
+  * EAA
+
+  For more info click [here](https://github.com/RoyNisimov1/CHA#cowcowmodes)
 
 ### Encryption algs
 - #### Ceaser Cipher / Rot13

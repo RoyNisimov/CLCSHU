@@ -3,7 +3,7 @@ import random
 from my_cryptography.ElGamal import ElGamalKey
 from main import Bcolors
 import CHA
-from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha, KRY, Krhash
+from CHA import BlackFrog, BlackFrogKey, OAEP, Piranha, KRY, Krhash, CowCowModes
 import string
 import hashlib
 import ast
@@ -1297,6 +1297,79 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
             raise InputException(None, "E", "D")
 
     @staticmethod
+    def visit_fun_algs_CowCow():
+        print(
+            f"{Bcolors.WARNING}This is my encryption algorithm, more info here: 'https://github.com/RoyNisimov1/CHA'{Bcolors.ENDC}")
+        encrypt_or_decrypt = input(
+            "Encrypt, decrypt. E/D: \n").lower()
+        modeOfOperation = input("Mode of operation, ECB/CTR/EAA: ").lower()
+        key = input('Key (32 bit): ').encode()
+        if encrypt_or_decrypt == 'e':
+            msg = CowCowModes.pad(input('Message: ').encode(), CowCowModes.BlockSize)
+            if modeOfOperation == 'ecb':
+                cipher = CowCowModes(key, CowCowModes.ECB, data=msg)
+                c = cipher.encrypt()
+                print(c)
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + c)
+                return c
+            if modeOfOperation == 'ctr':
+                cipher = CowCowModes(key, CowCowModes.CTR, data=msg)
+                c = cipher.encrypt(msg)
+                print(cipher.iv + c)
+
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + cipher.iv + c)
+                return c
+            if modeOfOperation == 'eaa':
+                cipher = CowCowModes(key, CowCowModes.EAA, data=msg)
+                c = cipher.encrypt(msg)
+                print(c)
+                file = input("File: ")
+                with open(file, 'wb') as f: f.write(c)
+                return c
+            raise InputException(None, "ECB", "CBC", "CTR", "EAA")
+        elif encrypt_or_decrypt == 'd':
+            file = input("File: ")
+            if modeOfOperation == 'ecb':
+                with open(file, 'rb') as f:
+                    hmac = f.read(64)
+                    data = f.read()
+                cipher = CowCowModes(key, CowCowModes.ECB)
+                d = cipher.decrypt(data)
+                print(CowCowModes.unpad(d))
+                v = cipher.verify(data=d, mac=hmac)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
+                return d
+            if modeOfOperation == 'ctr':
+                with open(file, 'rb') as f:
+                    hmac = f.read(64)
+                    iv = f.read(16)
+                    data = f.read()
+                cipher = CowCowModes(key, CowCowModes.CTR, iv=iv)
+                d = cipher.decrypt(data)
+                print(CowCowModes.unpad(d))
+                v = cipher.verify(data=d, mac=hmac)
+                if v:
+                    print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
+                else:
+                    print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
+                return d
+            if modeOfOperation == 'eaa':
+                with open(file, 'rb') as f:
+                    data = f.read()
+                cipher = CowCowModes(key, CowCowModes.EAA)
+                d = cipher.decrypt(data)
+                print(CowCowModes.unpad(d))
+                return d
+            raise InputException(None, "ECB", "CTR", "EAA")
+        else:
+            raise InputException(None, "E", "D")
+
+    @staticmethod
     def visit_fun_algs_KRY():
         print(
             f"{Bcolors.WARNING}This is my encryption algorithm, more info here: 'https://github.com/RoyNisimov1/CHA'{Bcolors.ENDC}")
@@ -1305,7 +1378,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         modeOfOperation = input("Mode of operation, ECB/CBC/CTR/EAA: ").lower()
         key = input('Key: ').encode()
         if encrypt_or_decrypt == 'e':
-            msg = KRY.pad(input('Message: ').encode(), KRY.BlockSize)
+            msg = KRY.pad(input('Message: ').encode())
             if modeOfOperation == 'ecb':
                 cipher = KRY(key, KRY.ECB, data=msg)
                 c = cipher.encrypt()
