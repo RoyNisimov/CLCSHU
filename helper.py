@@ -14,7 +14,7 @@ from Steganography.PNGs import EOF
 from my_cryptography import ElGamal, OAEP, Skipjack, MorseCode, BaseConverter
 from my_cryptography.Global import Common
 from my_cryptography.Files.EncryptedFile import EncryptedFile
-from my_cryptography.Files import RSAFile, ElGamalFile
+from my_cryptography.Files import RSAFile, ElGamalFile, CowCowFile
 from my_cryptography.Exeptions import InputException
 import json
 # pycryptodome:
@@ -1496,7 +1496,7 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
         print(
             f"{Bcolors.FAIL}My implementation of file encryption. 'https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/076_new_vs_init_in_python/new_vs_init.py' for the structure{Bcolors.ENDC}")
         content_or_message = input("Do you want to encrypt the file it self or a message and then safe to a file? C/M: ").lower()
-        algs = {"XOR": "xor", "AES 128 (16 byte key)": "aes128", "ChaCha20": "chacha20", "Piranha (My algorithm, uses EAA)": "piranha", "KRY (My algorithm, uses EAA)": "kry"}
+        algs = {"XOR": "xor", "AES 128 (16 byte key)": "aes128", "ChaCha20": "chacha20", "Piranha (My algorithm, uses EAA)": "piranha", "KRY (My algorithm, uses EAA)": "kry", "CowCow (My encryption, 32 bytes key)": "cowcow"}
         i = Bcolors.print_list(algs)
         encrypt_or_decrypt = input("Encrypt, decrypt. E/D: \n").lower()
         if content_or_message == "m":
