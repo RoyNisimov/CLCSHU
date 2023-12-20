@@ -42,6 +42,10 @@ class EncryptedFile:  # DO NOT USE ANY OF THESE FOR REAL ENCRYPTION
     def verify(self, data: bytes) -> bool:
         raise NotImplementedError
 
+    def read_write(self, file_out: str = None) -> None:
+        data = self.read()
+        self.write(data, file_out)
+
 
 class Plaintext(EncryptedFile, prefix='file'):
     def read(self):
