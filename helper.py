@@ -1311,13 +1311,12 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 c = cipher.encrypt()
                 print(c)
                 file = input("File: ")
-                with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + c)
+                with open(file, 'wb') as f: f.write(c)
                 return c
             if modeOfOperation == 'ctr':
                 cipher = CowCowModes(key, CowCowModes.CTR, data=msg)
                 c = cipher.encrypt(msg)
                 print(cipher.iv + c)
-
                 file = input("File: ")
                 with open(file, 'wb') as f: f.write(cipher.HMAC(msg) + cipher.iv + c)
                 return c
@@ -1328,21 +1327,15 @@ Wiki about PKCS1: 'https://en.wikipedia.org/wiki/PKCS_1'
                 file = input("File: ")
                 with open(file, 'wb') as f: f.write(c)
                 return c
-            raise InputException(None, "ECB", "CBC", "CTR", "EAA")
+            raise InputException(None, "ECB", "CTR", "EAA")
         elif encrypt_or_decrypt == 'd':
             file = input("File: ")
             if modeOfOperation == 'ecb':
                 with open(file, 'rb') as f:
-                    hmac = f.read(64)
                     data = f.read()
                 cipher = CowCowModes(key, CowCowModes.ECB)
                 d = cipher.decrypt(data)
                 print(CowCowModes.unpad(d))
-                v = cipher.verify(data=d, mac=hmac)
-                if v:
-                    print(f"{Bcolors.OKGREEN}The message is authentic{Bcolors.ENDC}")
-                else:
-                    print(f"{Bcolors.FAIL}The message isn't authentic{Bcolors.ENDC}")
                 return d
             if modeOfOperation == 'ctr':
                 with open(file, 'rb') as f:
